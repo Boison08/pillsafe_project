@@ -9,7 +9,7 @@ numpy>=1.24.0
 # picamera2  # Already available on Raspberry Pi OS
 
 # Hardware interfaces
-RPi.GPIO>=0.7.1                   # GPIO control for servo, buzzer, IR sensors
+#RPi.GPIO>=0.7.1                   # GPIO control for servo, buzzer, IR sensors
 smbus2>=0.4.3                     # I2C communication with DS3231 RTC
 
 # Serial communication
