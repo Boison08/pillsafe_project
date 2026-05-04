@@ -1,0 +1,3 @@
+# This directory stores facial image samples.
+# Each user's images are stored in a subdirectory named by their user_id.
+# Example: data/dataset/1/face_000.jpg, data/dataset/1/face_001.jpg, ...

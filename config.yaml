@@ -1,0 +1,79 @@
+# ============================================================
+# PillSafe — Central Configuration File
+# All tuneable system parameters in one place (NFR-21)
+# ============================================================
+
+# --- Facial Recognition ---
+face:
+  confidence_threshold: 70
+  max_retries: 3
+  sample_count: 30
+  image_size: [200, 200]
+  cascade_path: "haarcascade_frontalface_default.xml"
+  eye_cascade_path: "haarcascade_eye.xml"
+  model_path: "data/models/lbph_model.yml"
+  dataset_path: "data/dataset"
+
+# --- Liveness Detection ---
+liveness:
+  enabled: true
+  blink_threshold: 0.25
+  required_blinks: 2
+  detection_timeout: 10
+
+# --- Scheduling & Dispensing ---
+schedule:
+  grace_period_minutes: 15
+  poll_interval_seconds: 60
+
+# --- Servo Motor ---
+servo:
+  pwm_pin: 18
+  frequency_hz: 50
+  num_compartments: 6
+  min_duty: 2.5
+  max_duty: 12.5
+  hold_time: 0.5
+
+# --- IR Sensors ---
+ir_sensors:
+  pill_detect_pin: 23
+  pill_pickup_pin: 24
+  debounce_ms: 200
+
+# --- Buzzer ---
+buzzer:
+  pin: 25
+  dose_ready_pattern: [0.2, 0.1, 0.2, 0.1, 0.2]
+  success_pattern: [0.5]
+  failure_pattern: [0.1, 0.1, 0.1, 0.1, 0.1]
+  missed_pattern: [1.0, 0.5, 1.0]
+
+# --- GSM / SMS Alerts ---
+alerts:
+  serial_port: "/dev/ttyUSB0"
+  baud_rate: 9600
+  max_sms_per_event: 2
+  retry_interval_minutes: 60
+  sms_timeout: 10
+
+# --- Flask REST API ---
+api:
+  host: "0.0.0.0"
+  port: 5000
+  token: "CHANGE_ME_ON_FIRST_SETUP"
+
+# --- Database ---
+database:
+  path: "data/pillsafe.db"
+
+# --- DS3231 RTC ---
+rtc:
+  i2c_bus: 1
+  i2c_address: 0x68
+
+# --- System ---
+system:
+  max_users: 6
+  log_file: "data/pillsafe.log"
+  log_level: "INFO"

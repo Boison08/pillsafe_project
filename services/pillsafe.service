@@ -1,0 +1,23 @@
+# PillSafe systemd service (NFR-12)
+# Install:
+#   sudo cp pillsafe.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable pillsafe
+#   sudo systemctl start pillsafe
+
+[Unit]
+Description=PillSafe Smart Pill Dispenser Service
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/pillsafe
+ExecStart=/usr/bin/python3 /home/pi/pillsafe/main.py
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/pi/pillsafe/data/pillsafe_stdout.log
+StandardError=append:/home/pi/pillsafe/data/pillsafe_stderr.log
+
+[Install]
+WantedBy=multi-user.target
