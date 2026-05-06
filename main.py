@@ -7,7 +7,7 @@ Startup Sequence:
   1. Load configuration
   2. Initialise database
   3. Initialise hardware (camera, servo, IR sensors, buzzer, RTC, GSM)
-  4. Load LBPH recognition model
+  4. Load FaceNet (TFLite) recognition model
   5. Start Flask API server as a background thread
   6. Start the scheduling daemon
   7. Start the SMS alert service
@@ -16,7 +16,7 @@ Startup Sequence:
 Operational Workflow (per event):
   1. Scheduler detects a time match → creates DispenseEvent
   2. Buzzer plays "dose_ready" pattern
-  3. Camera activates → face detection + liveness check + LBPH verification
+  3. Camera activates → face detection + FaceNet (TFLite) verification
   4. On ACCEPT: servo rotates to compartment → IR confirms pill drop → IR confirms pickup → log TAKEN
   5. On REJECT (3 failures): log REJECTED → send alert
   6. On TIMEOUT (grace period): log MISSED → send alert
@@ -44,8 +44,7 @@ logger = setup_logger("pillsafe.main")
 from database.db_manager import DatabaseManager
 from core.camera import Camera
 from core.detector import FaceDetector
-from core.recogniser import FaceRecogniser
-from core.liveness import LivenessDetector
+from core.facenet_recogniser import FaceNetRecogniser
 from core.decision import DecisionEngine, VerificationResult
 from hardware.dispenser import Dispenser
 from hardware.ir_sensor import IRSensorManager
@@ -84,10 +83,9 @@ class PillSafeSystem:
         # ── Step 3: Core AI ──────────────────────────────────
         logger.info("Initialising facial recognition pipeline...")
         self.detector = FaceDetector()
-        self.recogniser = FaceRecogniser()
-        self.liveness = LivenessDetector(self.detector)
+        self.recogniser = FaceNetRecogniser()
         self.decision_engine = DecisionEngine(
-            self.camera, self.detector, self.recogniser, self.liveness
+            self.camera, self.detector, self.recogniser
         )
 
         # ── Step 4: Enrolment Manager ────────────────────────
@@ -216,21 +214,6 @@ class PillSafeSystem:
             # ── Authentication Failed (FR-08) ────────────────
             logger.warning("Verification REJECTED for user %d — lockout",
                             event.user_id)
-            self.db.log_event(
-                user_id=event.user_id,
-                schedule_id=event.schedule_id,
-                scheduled_time=event.scheduled_time,
-                outcome="REJECTED",
-            )
-            self.buzzer.play("failure")
-            self.alert_service.send_immediate_alert(
-                event.user_id, event.schedule_id,
-                "REJECTED", event.scheduled_time,
-            )
-
-        elif outcome.result == VerificationResult.LIVENESS_FAILED:
-            # ── Spoofing Attempt ─────────────────────────────
-            logger.warning("Liveness check FAILED — possible spoofing attempt")
             self.db.log_event(
                 user_id=event.user_id,
                 schedule_id=event.schedule_id,

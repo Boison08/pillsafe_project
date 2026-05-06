@@ -1,6 +1,6 @@
-# PillSafe — Smart Pill Dispenser with Facial Verification
+# PillSafe — Smart Pill Dispenser with Facial Recognition
 
-A Raspberry Pi 4B-based smart medication dispensing system that uses facial recognition (LBPH), IR-confirmed dispensing, and GSM SMS alerts to ensure safe, verified, and logged medication delivery.
+A Raspberry Pi 4B-based smart medication dispensing system that uses facial recognition (FaceNet embeddings), IR-confirmed dispensing, and GSM SMS alerts to ensure safe, verified, and logged medication delivery.
 
 **KNUST — Department of Computer Engineering | BSc Final Year Project**
 **Authors:** Boison, Simeon A.A. | Donkor, Maxwell J.
@@ -20,9 +20,8 @@ pillsafe/
 ├── core/                          # Facial recognition pipeline
 │   ├── camera.py                  # Pi Camera v2 capture (Picamera2)
 │   ├── detector.py                # Haar Cascade face detection + preprocessing
-│   ├── recogniser.py              # LBPH training and verification
-│   ├── liveness.py                # Eye-blink liveness detection
-│   └── decision.py                # Orchestrates detection → liveness → recognition
+│   ├── facenet_recogniser.py      # FaceNet embedding-based recognition
+│   └── decision.py                # Orchestrates detection → FaceNet recognition
 │
 ├── hardware/                      # Physical component interfaces
 │   ├── dispenser.py               # SG90 servo carousel controller (6 compartments)
@@ -52,8 +51,8 @@ pillsafe/
 │   └── logger.py                  # Project-wide logging setup
 │
 ├── data/                          # Runtime data (auto-created)
-│   ├── dataset/                   # Facial samples: dataset/{user_id}/face_NNN.jpg
-│   ├── models/                    # Trained LBPH model: lbph_model.yml
+│   ├── dataset/                   # Facial samples and embeddings: dataset/{user_id}/
+│   │                              # embeddings.npy, embeddings_metadata.txt
 │   ├── pillsafe.db                # SQLite database
 │   └── pillsafe.log               # Application log
 │
@@ -202,7 +201,7 @@ All endpoints (except `/health`) require `Authorization: Bearer <token>` header.
 
 ```
 RTC polls every 60s → Schedule match? → Buzzer alert → Camera ON
-  → Face detected? → Liveness check (blink) → LBPH verify
+  → Face detected? → FaceNet (TFLite) verify
     → ACCEPTED: Servo → IR confirm drop → IR confirm pickup → Log TAKEN
     → REJECTED (3 tries): Log REJECTED → SMS alert to caregiver
     → NO FACE (grace period): Retry every 30s → Log MISSED → SMS alert
@@ -217,7 +216,6 @@ RTC polls every 60s → Schedule match? → Buzzer alert → Camera ON
 | face.confidence_threshold       | 70      | LBPH match threshold (lower = stricter)      |
 | face.max_retries                | 3       | Verification attempts before lockout         |
 | face.sample_count               | 30      | Images captured during enrolment             |
-| liveness.required_blinks        | 2       | Blinks needed to pass liveness check         |
 | schedule.grace_period_minutes   | 15      | Window before marking dose as MISSED         |
 | schedule.poll_interval_seconds  | 60      | How often the scheduler checks the RTC       |
 | alerts.max_sms_per_event        | 2       | Maximum SMS alerts per missed dose           |

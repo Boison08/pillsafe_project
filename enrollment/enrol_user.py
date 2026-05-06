@@ -1,7 +1,7 @@
 """
 PillSafe — User Enrolment Module
 Captures facial samples for a user, saves them to disk,
-and retrains the LBPH model (SDR §3.2, FR-01 to FR-05).
+and retrains the FaceNet embedding model (SDR §3.2, FR-01 to FR-05).
 
 This can be triggered via:
   - The Flask API (POST /users/{id}/enrol)
@@ -13,7 +13,7 @@ import time
 import cv2
 from core.camera import Camera
 from core.detector import FaceDetector
-from core.recogniser import FaceRecogniser
+from core.facenet_recogniser import FaceNetRecogniser
 from database.db_manager import DatabaseManager
 from utils.config import get_config
 from utils.logger import setup_logger
@@ -25,7 +25,7 @@ class EnrolmentManager:
     """Handles facial enrolment: sample capture, storage, and training."""
 
     def __init__(self, camera: Camera, detector: FaceDetector,
-                 recogniser: FaceRecogniser, db: DatabaseManager):
+                 recogniser: FaceNetRecogniser, db: DatabaseManager):
         cfg = get_config()
         self.camera = camera
         self.detector = detector
@@ -40,7 +40,7 @@ class EnrolmentManager:
         1. Verify user exists in DB
         2. Capture facial samples
         3. Save images to dataset/{user_id}/
-        4. Retrain the LBPH model
+        4. Retrain the FaceNet embedding model
         5. Update enrolment_status in DB
 
         Returns (success, message).
@@ -101,8 +101,8 @@ class EnrolmentManager:
             if captured < 10:
                 return False, f"Insufficient samples captured: {captured}/{self.sample_count}"
 
-        # Step 4: Retrain the LBPH model (FR-09)
-        logger.info("Retraining LBPH model with updated dataset...")
+        # Step 4: Retrain the FaceNet embedding model (FR-09)
+        logger.info("Retraining FaceNet embedding model with updated dataset...")
         success = self.recogniser.train()
         if not success:
             return False, "Model training failed"

@@ -1,6 +1,6 @@
 """
 PillSafe — Decision Engine
-Orchestrates: capture → detect → liveness → LBPH recognition → result.
+Orchestrates: capture → detect → FaceNet recognition → result.
 Implements FR-07, FR-08, FR-10.
 """
 
@@ -10,8 +10,7 @@ from enum import Enum
 
 from core.camera import Camera
 from core.detector import FaceDetector
-from core.recogniser import FaceRecogniser
-from core.liveness import LivenessDetector
+from core.facenet_recogniser import FaceNetRecogniser
 from utils.config import get_config
 from utils.logger import setup_logger
 
@@ -22,7 +21,6 @@ class VerificationResult(Enum):
     ACCEPTED = "ACCEPTED"
     REJECTED = "REJECTED"
     NO_FACE = "NO_FACE"
-    LIVENESS_FAILED = "LIVENESS_FAILED"
     MODEL_NOT_READY = "MODEL_NOT_READY"
 
 
@@ -35,15 +33,13 @@ class VerificationOutcome:
 
 
 class DecisionEngine:
-    """Coordinates camera, detection, liveness, and recognition."""
+    """Coordinates camera, detection, and recognition."""
 
-    def __init__(self, camera: Camera, detector: FaceDetector,
-                 recogniser: FaceRecogniser, liveness: LivenessDetector):
+    def __init__(self, camera: Camera, detector: FaceDetector, recogniser: FaceNetRecogniser):
         cfg = get_config()
         self.camera = camera
         self.detector = detector
         self.recogniser = recogniser
-        self.liveness = liveness
         self.max_retries = cfg.face.max_retries
 
     def run_verification(self, expected_user_id: int | None = None) -> VerificationOutcome:
@@ -52,7 +48,7 @@ class DecisionEngine:
         Up to max_retries attempts before returning REJECTED.
         """
         if not self.recogniser.is_trained:
-            logger.error("LBPH model not loaded")
+            logger.error("Face recognition model not loaded")
             return VerificationOutcome(result=VerificationResult.MODEL_NOT_READY)
 
         for attempt in range(1, self.max_retries + 1):
@@ -72,31 +68,24 @@ class DecisionEngine:
                 continue
 
             roi, bbox = max(detections, key=lambda d: d[1][2] * d[1][3])
+            
 
-            # Liveness check (first attempt only to avoid user frustration)
-            if attempt == 1:
-                if not self.liveness.check_liveness(self.camera):
-                    logger.warning("Liveness check failed")
-                    return VerificationOutcome(
-                        result=VerificationResult.LIVENESS_FAILED,
-                        attempt=attempt,
-                    )
+            # FaceNet recognition
+            user_id, confidence = self.recogniser.predict(roi)
 
-            # LBPH recognition
-            accepted, label, confidence = self.recogniser.verify(roi, expected_user_id)
-
-            if accepted:
+            # FaceNet: Confidence > 60 means good match
+            if confidence > 60:
                 logger.info("ACCEPTED attempt %d: user=%d confidence=%.1f",
-                            attempt, label, confidence)
+                            attempt, user_id, confidence)
                 return VerificationOutcome(
                     result=VerificationResult.ACCEPTED,
-                    user_id=label,
+                    user_id=user_id,
                     confidence=confidence,
                     attempt=attempt,
                 )
             else:
                 logger.info("REJECTED attempt %d: predicted=%d confidence=%.1f",
-                            attempt, label, confidence)
+                            attempt, user_id, confidence)
                 time.sleep(1)
 
         # All retries exhausted — lockout (FR-08)

@@ -5,21 +5,12 @@
 
 # --- Facial Recognition ---
 face:
-  confidence_threshold: 70
+  confidence_threshold: 60
   max_retries: 3
-  sample_count: 30
+  sample_count: 20
   image_size: [200, 200]
   cascade_path: "haarcascade_frontalface_default.xml"
-  eye_cascade_path: "haarcascade_eye.xml"
-  model_path: "data/models/lbph_model.yml"
   dataset_path: "data/dataset"
-
-# --- Liveness Detection ---
-liveness:
-  enabled: true
-  blink_threshold: 0.25
-  required_blinks: 2
-  detection_timeout: 10
 
 # --- Scheduling & Dispensing ---
 schedule:

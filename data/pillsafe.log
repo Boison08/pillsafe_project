@@ -1,0 +1,118 @@
+[2026-05-06 23:18:29] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-05-06 23:18:30] WARNING  pillsafe.dispenser — RPi.GPIO not available — dispenser in simulation mode
+[2026-05-06 23:18:30] WARNING  pillsafe.ir_sensor — RPi.GPIO not available — IR sensors in simulation mode
+[2026-05-06 23:18:30] WARNING  pillsafe.rtc — smbus2 not available — RTC using system clock fallback
+[2026-05-06 23:18:31] INFO     pillsafe.main — ============================================================
+[2026-05-06 23:18:31] INFO     pillsafe.main — PillSafe Smart Pill Dispenser — Starting Up
+[2026-05-06 23:18:31] INFO     pillsafe.main — ============================================================
+[2026-05-06 23:18:31] INFO     pillsafe.main — Initialising database...
+[2026-05-06 23:18:31] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-05-06 23:18:31] INFO     pillsafe.main — Initialising hardware modules...
+[2026-05-06 23:18:31] INFO     pillsafe.dispenser — Dispenser GPIO simulated — pin 18
+[2026-05-06 23:18:31] INFO     pillsafe.ir_sensor — IR sensors simulated on GPIO 23, 24
+[2026-05-06 23:18:31] INFO     pillsafe.buzzer — Buzzer simulated on GPIO 25
+[2026-05-06 23:18:31] ERROR    pillsafe.gsm — Serial port /dev/ttyUSB0 error: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+[2026-05-06 23:18:31] INFO     pillsafe.main — Initialising facial recognition pipeline...
+[2026-05-06 23:18:31] INFO     pillsafe.detector — Face detector initialised (ROI size: (200, 200))
+[2026-05-06 23:20:05] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-05-06 23:20:06] WARNING  pillsafe.dispenser — RPi.GPIO not available — dispenser in simulation mode
+[2026-05-06 23:20:06] WARNING  pillsafe.ir_sensor — RPi.GPIO not available — IR sensors in simulation mode
+[2026-05-06 23:20:06] WARNING  pillsafe.rtc — smbus2 not available — RTC using system clock fallback
+[2026-05-06 23:20:29] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-05-06 23:20:30] WARNING  pillsafe.dispenser — RPi.GPIO not available — dispenser in simulation mode
+[2026-05-06 23:20:30] WARNING  pillsafe.ir_sensor — RPi.GPIO not available — IR sensors in simulation mode
+[2026-05-06 23:20:30] WARNING  pillsafe.rtc — smbus2 not available — RTC using system clock fallback
+[2026-05-06 23:21:53] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-05-06 23:21:54] WARNING  pillsafe.dispenser — RPi.GPIO not available — dispenser in simulation mode
+[2026-05-06 23:21:54] WARNING  pillsafe.ir_sensor — RPi.GPIO not available — IR sensors in simulation mode
+[2026-05-06 23:21:54] WARNING  pillsafe.rtc — smbus2 not available — RTC using system clock fallback
+[2026-05-06 23:21:54] INFO     pillsafe.main — ============================================================
+[2026-05-06 23:21:54] INFO     pillsafe.main — PillSafe Smart Pill Dispenser — Starting Up
+[2026-05-06 23:21:54] INFO     pillsafe.main — ============================================================
+[2026-05-06 23:21:54] INFO     pillsafe.main — Initialising database...
+[2026-05-06 23:21:54] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-05-06 23:21:54] INFO     pillsafe.main — Initialising hardware modules...
+[2026-05-06 23:21:54] INFO     pillsafe.dispenser — Dispenser GPIO simulated — pin 18
+[2026-05-06 23:21:54] INFO     pillsafe.ir_sensor — IR sensors simulated on GPIO 23, 24
+[2026-05-06 23:21:54] INFO     pillsafe.buzzer — Buzzer simulated on GPIO 25
+[2026-05-06 23:21:54] ERROR    pillsafe.gsm — Serial port /dev/ttyUSB0 error: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+[2026-05-06 23:21:54] INFO     pillsafe.main — Initialising facial recognition pipeline...
+[2026-05-06 23:21:54] INFO     pillsafe.detector — Face detector initialised (ROI size: (200, 200))
+[2026-05-06 23:21:54] WARNING  pillsafe.facenet — Using fallback face detection with MediaPipe solutions
+[2026-05-06 23:21:54] INFO     pillsafe.facenet — MediaPipe Face Detector initialized
+[2026-05-06 23:21:54] INFO     pillsafe.facenet — Embeddings metadata loaded: 1 users
+[2026-05-06 23:21:54] INFO     pillsafe.alerts — Alert service started
+[2026-05-06 23:21:54] INFO     pillsafe.scheduler — Scheduler started (polling every 60s, grace=15 min)
+[2026-05-06 23:21:54] INFO     pillsafe.main — Flask API started on 0.0.0.0:5000
+[2026-05-06 23:21:54] INFO     pillsafe.main — System ready — RTC time: 2026-05-06 23:21:54
+[2026-05-06 23:21:54] INFO     pillsafe.main — Entering idle state — waiting for dispensing events...
+[2026-05-06 23:23:29] INFO     pillsafe.main — Shutdown signal received (signal 2)
+[2026-05-06 23:23:29] INFO     pillsafe.main — Shutting down PillSafe...
+[2026-05-06 23:23:39] INFO     pillsafe.scheduler — Scheduler stopped
+[2026-05-06 23:23:44] INFO     pillsafe.alerts — Alert service stopped
+[2026-05-06 23:23:44] INFO     pillsafe.main — PillSafe shut down complete
+[2026-05-06 23:23:44] INFO     pillsafe.main — ============================================================
+[2026-05-06 23:30:58] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-05-06 23:31:03] INFO     pillsafe.camera — Camera started at 640x480
+[2026-05-06 23:31:04] INFO     pillsafe.detector — Face detector initialised (ROI size: (200, 200))
+[2026-05-06 23:31:04] WARNING  pillsafe.facenet — Using fallback face detection with MediaPipe solutions
+[2026-05-06 23:31:04] INFO     pillsafe.facenet — MediaPipe Face Detector initialized
+[2026-05-06 23:31:04] INFO     pillsafe.facenet — Embeddings metadata loaded: 1 users
+[2026-05-06 23:31:07] INFO     pillsafe.facenet — Prediction: user=1, distance=0.408, confidence=79.6
+[2026-05-06 23:33:49] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-05-06 23:33:55] INFO     pillsafe.camera — Camera started at 640x480
+[2026-05-06 23:33:55] INFO     pillsafe.detector — Face detector initialised (ROI size: (200, 200))
+[2026-05-06 23:33:55] WARNING  pillsafe.facenet — Using fallback face detection with MediaPipe solutions
+[2026-05-06 23:33:55] INFO     pillsafe.facenet — MediaPipe Face Detector initialized
+[2026-05-06 23:33:55] INFO     pillsafe.facenet — Embeddings metadata loaded: 1 users
+[2026-05-06 23:33:58] INFO     pillsafe.facenet — Prediction: user=1, distance=0.403, confidence=79.9
+[2026-05-06 23:33:58] WARNING  pillsafe.facenet — Using fallback face detection with MediaPipe solutions
+[2026-05-06 23:33:58] INFO     pillsafe.facenet — MediaPipe Face Detector initialized
+[2026-05-06 23:33:58] INFO     pillsafe.facenet — Embeddings metadata loaded: 1 users
+[2026-05-06 23:34:01] INFO     pillsafe.decision — Verification attempt 1/3
+[2026-05-06 23:34:02] INFO     pillsafe.facenet — Prediction: user=1, distance=0.379, confidence=81.1
+[2026-05-06 23:34:02] INFO     pillsafe.decision — ACCEPTED attempt 1: user=1 confidence=81.1
+[2026-05-06 23:35:57] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-05-06 23:36:02] INFO     pillsafe.camera — Camera started at 640x480
+[2026-05-06 23:36:02] INFO     pillsafe.detector — Face detector initialised (ROI size: (200, 200))
+[2026-05-06 23:36:02] WARNING  pillsafe.facenet — Using fallback face detection with MediaPipe solutions
+[2026-05-06 23:36:02] INFO     pillsafe.facenet — MediaPipe Face Detector initialized
+[2026-05-06 23:36:02] INFO     pillsafe.facenet — Embeddings metadata loaded: 1 users
+[2026-05-06 23:36:05] INFO     pillsafe.facenet — Prediction: user=1, distance=0.400, confidence=80.0
+[2026-05-06 23:36:05] WARNING  pillsafe.facenet — Using fallback face detection with MediaPipe solutions
+[2026-05-06 23:36:05] INFO     pillsafe.facenet — MediaPipe Face Detector initialized
+[2026-05-06 23:36:05] INFO     pillsafe.facenet — Embeddings metadata loaded: 1 users
+[2026-05-06 23:36:08] INFO     pillsafe.decision — Verification attempt 1/3
+[2026-05-06 23:36:08] INFO     pillsafe.facenet — Prediction: user=1, distance=0.393, confidence=80.3
+[2026-05-06 23:36:08] INFO     pillsafe.decision — ACCEPTED attempt 1: user=1 confidence=80.3
+[2026-05-06 23:36:11] INFO     pillsafe.camera — Camera stopped
+[2026-05-06 23:38:23] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-05-06 23:38:24] WARNING  pillsafe.dispenser — RPi.GPIO not available — dispenser in simulation mode
+[2026-05-06 23:38:24] WARNING  pillsafe.ir_sensor — RPi.GPIO not available — IR sensors in simulation mode
+[2026-05-06 23:38:24] WARNING  pillsafe.rtc — smbus2 not available — RTC using system clock fallback
+[2026-05-06 23:38:24] INFO     pillsafe.main — ============================================================
+[2026-05-06 23:38:24] INFO     pillsafe.main — PillSafe Smart Pill Dispenser — Starting Up
+[2026-05-06 23:38:24] INFO     pillsafe.main — ============================================================
+[2026-05-06 23:38:24] INFO     pillsafe.main — Initialising database...
+[2026-05-06 23:38:24] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-05-06 23:38:24] INFO     pillsafe.main — Initialising hardware modules...
+[2026-05-06 23:38:24] INFO     pillsafe.dispenser — Dispenser GPIO simulated — pin 18
+[2026-05-06 23:38:24] INFO     pillsafe.ir_sensor — IR sensors simulated on GPIO 23, 24
+[2026-05-06 23:38:24] INFO     pillsafe.buzzer — Buzzer simulated on GPIO 25
+[2026-05-06 23:38:24] ERROR    pillsafe.gsm — Serial port /dev/ttyUSB0 error: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+[2026-05-06 23:38:24] INFO     pillsafe.main — Initialising facial recognition pipeline...
+[2026-05-06 23:38:24] INFO     pillsafe.detector — Face detector initialised (ROI size: (200, 200))
+[2026-05-06 23:38:24] WARNING  pillsafe.facenet — Using fallback face detection with MediaPipe solutions
+[2026-05-06 23:38:24] INFO     pillsafe.facenet — MediaPipe Face Detector initialized
+[2026-05-06 23:38:24] INFO     pillsafe.facenet — Embeddings metadata loaded: 1 users
+[2026-05-06 23:38:24] INFO     pillsafe.alerts — Alert service started
+[2026-05-06 23:38:24] INFO     pillsafe.scheduler — Scheduler started (polling every 60s, grace=15 min)
+[2026-05-06 23:38:24] INFO     pillsafe.main — Flask API started on 0.0.0.0:5000
+[2026-05-06 23:38:24] INFO     pillsafe.main — System ready — RTC time: 2026-05-06 23:38:24
+[2026-05-06 23:38:24] INFO     pillsafe.main — Entering idle state — waiting for dispensing events...
+[2026-05-06 23:38:27] INFO     pillsafe.main — Shutdown signal received (signal 2)
+[2026-05-06 23:38:27] INFO     pillsafe.main — Shutting down PillSafe...
+[2026-05-06 23:38:37] INFO     pillsafe.scheduler — Scheduler stopped
+[2026-05-06 23:38:42] INFO     pillsafe.alerts — Alert service stopped
+[2026-05-06 23:38:42] INFO     pillsafe.main — PillSafe shut down complete
+[2026-05-06 23:38:42] INFO     pillsafe.main — ============================================================
