@@ -41,6 +41,7 @@ class DecisionEngine:
         self.detector = detector
         self.recogniser = recogniser
         self.max_retries = cfg.face.max_retries
+        self.confidence_threshold = cfg.face.confidence_threshold
 
     def run_verification(self, expected_user_id: int | None = None) -> VerificationOutcome:
         """
@@ -73,8 +74,8 @@ class DecisionEngine:
             # FaceNet recognition
             user_id, confidence = self.recogniser.predict(roi)
 
-            # FaceNet: Confidence > 60 means good match
-            if confidence > 60:
+            # FaceNet: confidence above threshold means good match
+            if confidence >= self.confidence_threshold:
                 logger.info("ACCEPTED attempt %d: user=%d confidence=%.1f",
                             attempt, user_id, confidence)
                 return VerificationOutcome(

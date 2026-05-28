@@ -2,8 +2,16 @@
 # Install: pip install -r requirements.txt --break-system-packages
 
 # Core
-opencv-contrib-python==4.13.0.92  # OpenCV with LBPH face recogniser (NumPy 2.x compatible)
+opencv-contrib-python==4.13.0.92  # OpenCV with Haar Cascade face detection (NumPy 2.x compatible)
 numpy>=2.0.0
+scipy>=1.12.0                     # Cosine distance for FaceNet embedding comparison
+
+# FaceNet / MobileFaceNet inference
+# On Raspberry Pi:  pip install tflite-runtime --break-system-packages
+# On dev machine:   pip install tensorflow --break-system-packages
+# Only ONE of the above is needed — the code auto-detects which is available.
+tflite-runtime>=2.14.0; platform_machine == "aarch64"   # Pi 4/5 (ARM64)
+# tensorflow>=2.15.0              # Uncomment for x86 dev/testing
 
 # Camera (Raspberry Pi — pre-installed on Pi OS)
 # picamera2  # Already available on Raspberry Pi OS
@@ -20,6 +28,3 @@ Flask>=3.0.0                      # REST API server
 
 # Configuration
 PyYAML>=6.0                       # config.yaml loader
-
-# Scheduling (optional — using custom polling loop instead)
-# APScheduler>=3.10.0

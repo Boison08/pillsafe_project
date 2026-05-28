@@ -137,7 +137,7 @@ def run_cli_enrolment():
     db = DatabaseManager()
     camera = Camera()
     detector = FaceDetector()
-    recogniser = FaceRecogniser()
+    recogniser = FaceNetRecogniser()
     manager = EnrolmentManager(camera, detector, recogniser, db)
 
     print("\n=== PillSafe User Enrolment ===\n")
