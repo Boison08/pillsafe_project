@@ -116,3 +116,61 @@
 [2026-05-06 23:38:42] INFO     pillsafe.alerts — Alert service stopped
 [2026-05-06 23:38:42] INFO     pillsafe.main — PillSafe shut down complete
 [2026-05-06 23:38:42] INFO     pillsafe.main — ============================================================
+[2026-05-28 23:03:15] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-05-28 23:03:16] ERROR    pillsafe.facenet — Neither tflite_runtime nor tensorflow is installed. Install with: pip install tflite-runtime --break-system-packages
+[2026-05-28 23:03:16] WARNING  pillsafe.dispenser — RPi.GPIO not available — dispenser in simulation mode
+[2026-05-28 23:03:16] WARNING  pillsafe.ir_sensor — RPi.GPIO not available — IR sensors in simulation mode
+[2026-05-28 23:03:16] WARNING  pillsafe.rtc — smbus2 not available — RTC using system clock fallback
+[2026-05-28 23:03:16] INFO     pillsafe.main — ============================================================
+[2026-05-28 23:03:16] INFO     pillsafe.main — PillSafe Smart Pill Dispenser — Starting Up
+[2026-05-28 23:03:16] INFO     pillsafe.main — ============================================================
+[2026-05-28 23:03:16] INFO     pillsafe.main — Initialising database...
+[2026-05-28 23:03:16] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-05-28 23:03:16] INFO     pillsafe.main — Initialising hardware modules...
+[2026-05-28 23:03:16] INFO     pillsafe.dispenser — Dispenser GPIO simulated — pin 18
+[2026-05-28 23:03:16] INFO     pillsafe.ir_sensor — IR sensors simulated on GPIO 23, 24
+[2026-05-28 23:03:16] INFO     pillsafe.buzzer — Buzzer simulated on GPIO 25
+[2026-05-28 23:03:16] ERROR    pillsafe.gsm — Serial port /dev/ttyUSB0 error: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+[2026-05-28 23:03:16] INFO     pillsafe.main — Initialising facial recognition pipeline...
+[2026-05-28 23:03:16] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112))
+[2026-05-28 23:03:16] INFO     pillsafe.facenet — Embedding store ready — 0 enrolled user(s)
+[2026-05-28 23:03:16] INFO     pillsafe.alerts — Alert service started
+[2026-05-28 23:03:16] INFO     pillsafe.scheduler — Scheduler started (polling every 60s, grace=15 min)
+[2026-05-28 23:03:16] INFO     pillsafe.main — Flask API started on 0.0.0.0:5000
+[2026-05-28 23:03:16] INFO     pillsafe.main — System ready — RTC time: 2026-05-28 23:03:16
+[2026-05-28 23:03:16] INFO     pillsafe.main — Entering idle state — waiting for dispensing events...
+[2026-05-28 23:05:39] INFO     pillsafe.main — Shutdown signal received (signal 2)
+[2026-05-28 23:05:39] INFO     pillsafe.main — Shutting down PillSafe...
+[2026-05-28 23:05:49] INFO     pillsafe.scheduler — Scheduler stopped
+[2026-05-28 23:05:54] INFO     pillsafe.alerts — Alert service stopped
+[2026-05-28 23:05:54] INFO     pillsafe.main — PillSafe shut down complete
+[2026-05-28 23:05:54] INFO     pillsafe.main — ============================================================
+[2026-05-28 23:32:35] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-05-28 23:32:36] ERROR    pillsafe.facenet — Neither tflite_runtime nor tensorflow is installed. Install with: pip install tflite-runtime --break-system-packages
+[2026-05-28 23:32:36] WARNING  pillsafe.dispenser — RPi.GPIO not available — dispenser in simulation mode
+[2026-05-28 23:32:36] WARNING  pillsafe.ir_sensor — RPi.GPIO not available — IR sensors in simulation mode
+[2026-05-28 23:32:36] WARNING  pillsafe.rtc — smbus2 not available — RTC using system clock fallback
+[2026-05-28 23:32:36] INFO     pillsafe.main — ============================================================
+[2026-05-28 23:32:36] INFO     pillsafe.main — PillSafe Smart Pill Dispenser — Starting Up
+[2026-05-28 23:32:36] INFO     pillsafe.main — ============================================================
+[2026-05-28 23:32:36] INFO     pillsafe.main — Initialising database...
+[2026-05-28 23:32:36] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-05-28 23:32:36] INFO     pillsafe.main — Initialising hardware modules...
+[2026-05-28 23:32:36] INFO     pillsafe.dispenser — Dispenser GPIO simulated — pin 18
+[2026-05-28 23:32:36] INFO     pillsafe.ir_sensor — IR sensors simulated on GPIO 23, 24
+[2026-05-28 23:32:36] INFO     pillsafe.buzzer — Buzzer simulated on GPIO 25
+[2026-05-28 23:32:36] ERROR    pillsafe.gsm — Serial port /dev/ttyUSB0 error: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+[2026-05-28 23:32:36] INFO     pillsafe.main — Initialising facial recognition pipeline...
+[2026-05-28 23:32:36] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112))
+[2026-05-28 23:32:36] INFO     pillsafe.facenet — Embedding store ready — 0 enrolled user(s)
+[2026-05-28 23:32:36] INFO     pillsafe.alerts — Alert service started
+[2026-05-28 23:32:36] INFO     pillsafe.scheduler — Scheduler started (polling every 60s, grace=15 min)
+[2026-05-28 23:32:36] INFO     pillsafe.main — Flask API started on 0.0.0.0:5000
+[2026-05-28 23:32:36] INFO     pillsafe.main — System ready — RTC time: 2026-05-28 23:32:36
+[2026-05-28 23:32:36] INFO     pillsafe.main — Entering idle state — waiting for dispensing events...
+[2026-05-28 23:32:41] INFO     pillsafe.main — Shutdown signal received (signal 2)
+[2026-05-28 23:32:41] INFO     pillsafe.main — Shutting down PillSafe...
+[2026-05-28 23:32:51] INFO     pillsafe.scheduler — Scheduler stopped
+[2026-05-28 23:32:56] INFO     pillsafe.alerts — Alert service stopped
+[2026-05-28 23:32:56] INFO     pillsafe.main — PillSafe shut down complete
+[2026-05-28 23:32:56] INFO     pillsafe.main — ============================================================
