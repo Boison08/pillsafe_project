@@ -18,6 +18,9 @@ class FaceDetector:
     def __init__(self):
         cfg = get_config()
         self.image_size = tuple(cfg.face.image_size)
+        self.scale_factor = getattr(cfg.face, "scale_factor", 1.1)
+        self.min_neighbors = getattr(cfg.face, "min_neighbors", 3)
+        self.min_face_size = tuple(getattr(cfg.face, "min_face_size", [50, 50]))
 
         self.face_cascade = cv2.CascadeClassifier(
             cv2.data.haarcascades + cfg.face.cascade_path
@@ -25,7 +28,11 @@ class FaceDetector:
         if self.face_cascade.empty():
             raise RuntimeError("Failed to load face cascade classifier")
 
-        logger.info("Face detector initialised (ROI size: %s)", self.image_size)
+        logger.info(
+            "Face detector initialised (ROI size: %s, scaleFactor=%.2f, "
+            "minNeighbors=%d, minSize=%s)",
+            self.image_size, self.scale_factor, self.min_neighbors, self.min_face_size,
+        )
 
     def preprocess(self, frame: np.ndarray) -> np.ndarray:
         """Convert to greyscale and apply histogram equalisation."""
@@ -35,7 +42,10 @@ class FaceDetector:
     def detect_faces(self, grey_frame: np.ndarray) -> list[tuple[int, int, int, int]]:
         """Detect faces in a greyscale frame. Returns list of (x, y, w, h)."""
         faces = self.face_cascade.detectMultiScale(
-            grey_frame, scaleFactor=1.2, minNeighbors=5, minSize=(80, 80),
+            grey_frame,
+            scaleFactor=self.scale_factor,
+            minNeighbors=self.min_neighbors,
+            minSize=self.min_face_size,
         )
         if len(faces) == 0:
             return []

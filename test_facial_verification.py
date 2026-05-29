@@ -212,21 +212,23 @@ for countdown in range(3, 0, -1):
 # Capture test frame
 test_frame_captured = None
 test_detections = None
-for attempt in range(30):  # Try up to 30 frames
+for attempt in range(60):  # Try up to 60 frames
     frame = camera.capture_frame()
     if frame is None:
         continue
-    
+
     detections = detector.detect_and_extract(frame)
     if len(detections) > 0:
         test_frame_captured = frame
         test_detections = detections
         print("✓ Face detected!")
         break
-    
+
     time.sleep(0.1)
     if (attempt + 1) % 10 == 0:
-        print(f"  Attempt {attempt + 1}/30...")
+        grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        brightness = grey.mean()
+        print(f"  Attempt {attempt + 1}/60... (brightness={brightness:.0f}, ensure good lighting)")
 
 if test_frame_captured is None or test_detections is None:
     print("✗ No face detected - please try again")

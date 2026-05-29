@@ -36,16 +36,21 @@ try:
     TFLITE_SOURCE = "tflite_runtime"
 except ImportError:
     try:
-        import tensorflow as tf
-        tflite = tf.lite
-        TFLITE_SOURCE = "tensorflow"
+        from ai_edge_litert import interpreter as _ai_edge
+        tflite = _ai_edge
+        TFLITE_SOURCE = "ai_edge_litert"
     except ImportError:
-        tflite = None
-        TFLITE_SOURCE = None
-        logger.error(
-            "Neither tflite_runtime nor tensorflow is installed. "
-            "Install with: pip install tflite-runtime --break-system-packages"
-        )
+        try:
+            import tensorflow as tf
+            tflite = tf.lite
+            TFLITE_SOURCE = "tensorflow"
+        except ImportError:
+            tflite = None
+            TFLITE_SOURCE = None
+            logger.error(
+                "No TFLite runtime found. Install one of: "
+                "pip install ai-edge-litert  OR  pip install tflite-runtime"
+            )
 
 
 class FaceNetRecogniser:
@@ -316,7 +321,7 @@ class FaceNetRecogniser:
             total_embeddings += len(embeddings)
 
             logger.info(
-                "User %d: saved %d embeddings → %s",
+                "User %d: saved %d embeddings -> %s",
                 user_id, len(embeddings), emb_file,
             )
 

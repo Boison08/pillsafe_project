@@ -31,7 +31,8 @@ def setup_logger(name: str = "pillsafe") -> logging.Logger:
     fh.setFormatter(formatter)
     logger.addHandler(fh)
 
-    ch = logging.StreamHandler()
+    import sys
+    ch = logging.StreamHandler(stream=open(sys.stdout.fileno(), mode="w", encoding="utf-8", closefd=False))
     ch.setLevel(log_level)
     ch.setFormatter(formatter)
     logger.addHandler(ch)

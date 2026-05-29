@@ -11,6 +11,9 @@ face:
   sample_count: 20
   image_size: [112, 112]            # MobileFaceNet input size (H, W)
   cascade_path: "haarcascade_frontalface_default.xml"
+  scale_factor: 1.1        # Smaller = more thorough scan (slower)
+  min_neighbors: 3         # Lower = more detections, more false positives
+  min_face_size: [50, 50]  # Minimum face size in pixels (W, H)
   dataset_path: "data/dataset"
   model_path: "data/models/mobilefacenet.tflite"
 
