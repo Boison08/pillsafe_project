@@ -894,3 +894,145 @@
 [2026-06-11 17:32:39] INFO     pillsafe.decision — REJECTED attempt 3: predicted=5 confidence=28.7
 [2026-06-11 17:32:40] WARNING  pillsafe.decision — FAILED after 3 attempts — lockout
 [2026-06-11 17:32:42] INFO     pillsafe.camera — Camera stopped
+[2026-06-12 11:18:47] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-12 11:18:54] INFO     pillsafe.camera — Camera started at 640x480
+[2026-06-12 11:18:54] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-12 11:18:54] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-12 11:18:54] INFO     pillsafe.facenet — Loaded 20 embeddings for user 1
+[2026-06-12 11:18:54] INFO     pillsafe.facenet — Loaded 20 embeddings for user 2
+[2026-06-12 11:18:54] INFO     pillsafe.facenet — Loaded 20 embeddings for user 4
+[2026-06-12 11:18:54] INFO     pillsafe.facenet — Loaded 20 embeddings for user 5
+[2026-06-12 11:18:54] INFO     pillsafe.facenet — Embedding store ready — 4 enrolled user(s)
+[2026-06-12 11:18:58] INFO     pillsafe.facenet — Prediction: user=1, cosine_dist=0.5985, confidence=40.2
+[2026-06-12 11:18:58] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-12 11:19:01] INFO     pillsafe.decision — Verification attempt 1/3
+[2026-06-12 11:19:01] INFO     pillsafe.facenet — Prediction: user=1, cosine_dist=0.5705, confidence=42.9
+[2026-06-12 11:19:01] INFO     pillsafe.decision — REJECTED attempt 1: predicted=1 confidence=42.9
+[2026-06-12 11:19:02] INFO     pillsafe.decision — Verification attempt 2/3
+[2026-06-12 11:19:02] INFO     pillsafe.facenet — Prediction: user=1, cosine_dist=0.5697, confidence=43.0
+[2026-06-12 11:19:02] INFO     pillsafe.decision — REJECTED attempt 2: predicted=1 confidence=43.0
+[2026-06-12 11:19:03] INFO     pillsafe.decision — Verification attempt 3/3
+[2026-06-12 11:19:03] INFO     pillsafe.facenet — Prediction: user=1, cosine_dist=0.5973, confidence=40.3
+[2026-06-12 11:19:03] INFO     pillsafe.decision — REJECTED attempt 3: predicted=1 confidence=40.3
+[2026-06-12 11:19:04] WARNING  pillsafe.decision — FAILED after 3 attempts — lockout
+[2026-06-12 11:19:06] INFO     pillsafe.camera — Camera stopped
+[2026-06-12 11:19:38] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-12 11:19:44] INFO     pillsafe.camera — Camera started at 640x480
+[2026-06-12 11:19:44] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-12 11:19:44] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-12 11:19:44] INFO     pillsafe.facenet — Loaded 20 embeddings for user 1
+[2026-06-12 11:19:44] INFO     pillsafe.facenet — Loaded 20 embeddings for user 2
+[2026-06-12 11:19:44] INFO     pillsafe.facenet — Loaded 20 embeddings for user 4
+[2026-06-12 11:19:44] INFO     pillsafe.facenet — Loaded 20 embeddings for user 5
+[2026-06-12 11:19:44] INFO     pillsafe.facenet — Embedding store ready — 4 enrolled user(s)
+[2026-06-12 11:19:48] INFO     pillsafe.facenet — Prediction: user=1, cosine_dist=0.6466, confidence=35.3
+[2026-06-12 11:19:48] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-12 11:19:51] INFO     pillsafe.decision — Verification attempt 1/3
+[2026-06-12 11:19:51] INFO     pillsafe.facenet — Prediction: user=1, cosine_dist=0.6772, confidence=32.3
+[2026-06-12 11:19:51] INFO     pillsafe.decision — REJECTED attempt 1: predicted=1 confidence=32.3
+[2026-06-12 11:19:52] INFO     pillsafe.decision — Verification attempt 2/3
+[2026-06-12 11:19:52] INFO     pillsafe.facenet — Prediction: user=1, cosine_dist=0.6397, confidence=36.0
+[2026-06-12 11:19:52] INFO     pillsafe.decision — REJECTED attempt 2: predicted=1 confidence=36.0
+[2026-06-12 11:19:53] INFO     pillsafe.decision — Verification attempt 3/3
+[2026-06-12 11:19:53] INFO     pillsafe.facenet — Prediction: user=1, cosine_dist=0.5606, confidence=43.9
+[2026-06-12 11:19:53] INFO     pillsafe.decision — REJECTED attempt 3: predicted=1 confidence=43.9
+[2026-06-12 11:19:54] WARNING  pillsafe.decision — FAILED after 3 attempts — lockout
+[2026-06-12 11:19:56] INFO     pillsafe.camera — Camera stopped
+[2026-06-12 11:26:14] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — Loaded 20 embeddings for user 1
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — Loaded 20 embeddings for user 2
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — Loaded 20 embeddings for user 4
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — Loaded 20 embeddings for user 5
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — Embedding store ready — 4 enrolled user(s)
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — Generating embeddings for user 1 (20 images)
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — User 1: saved 20 embeddings -> data/dataset\1\embeddings.npy
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — Generating embeddings for user 2 (20 images)
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — User 2: saved 20 embeddings -> data/dataset\2\embeddings.npy
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — Generating embeddings for user 4 (20 images)
+[2026-06-12 11:26:15] WARNING  pillsafe.facenet — User 4: dropped 4 outlier sample(s) (bad crops) out of 20
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — User 4: saved 20 embeddings -> data/dataset\4\embeddings.npy
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — Generating embeddings for user 5 (20 images)
+[2026-06-12 11:26:15] WARNING  pillsafe.facenet — User 5: dropped 2 outlier sample(s) (bad crops) out of 20
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — User 5: saved 20 embeddings -> data/dataset\5\embeddings.npy
+[2026-06-12 11:26:15] INFO     pillsafe.facenet — Training complete — 4 user(s), 80 total embeddings
+[2026-06-12 11:27:06] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-12 11:27:06] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-12 11:27:06] INFO     pillsafe.facenet — Loaded 20 embeddings for user 1
+[2026-06-12 11:27:06] INFO     pillsafe.facenet — Loaded 20 embeddings for user 2
+[2026-06-12 11:27:06] INFO     pillsafe.facenet — Loaded 16 embeddings for user 4
+[2026-06-12 11:27:06] INFO     pillsafe.facenet — Loaded 18 embeddings for user 5
+[2026-06-12 11:27:06] INFO     pillsafe.facenet — Embedding store ready — 4 enrolled user(s)
+[2026-06-12 11:27:06] INFO     pillsafe.facenet — Prediction: user=1, cosine_dist=0.0273, confidence=97.3
+[2026-06-12 11:27:06] INFO     pillsafe.facenet — Prediction: user=2, cosine_dist=0.0361, confidence=96.4
+[2026-06-12 11:33:25] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-12 11:33:32] INFO     pillsafe.camera — Camera started at 640x480
+[2026-06-12 11:33:32] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-12 11:33:32] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-12 11:33:32] INFO     pillsafe.facenet — Loaded 20 embeddings for user 1
+[2026-06-12 11:33:32] INFO     pillsafe.facenet — Loaded 20 embeddings for user 2
+[2026-06-12 11:33:32] INFO     pillsafe.facenet — Loaded 16 embeddings for user 4
+[2026-06-12 11:33:32] INFO     pillsafe.facenet — Loaded 18 embeddings for user 5
+[2026-06-12 11:33:32] INFO     pillsafe.facenet — Embedding store ready — 4 enrolled user(s)
+[2026-06-12 11:33:35] INFO     pillsafe.facenet — Prediction: user=4, cosine_dist=0.6276, confidence=37.2
+[2026-06-12 11:33:35] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-12 11:33:39] INFO     pillsafe.decision — Verification attempt 1/3
+[2026-06-12 11:33:40] INFO     pillsafe.decision — Verification attempt 2/3
+[2026-06-12 11:33:40] INFO     pillsafe.facenet — Prediction: user=4, cosine_dist=0.5260, confidence=47.4
+[2026-06-12 11:33:40] INFO     pillsafe.decision — REJECTED attempt 2: predicted=4 confidence=47.4
+[2026-06-12 11:33:41] INFO     pillsafe.decision — Verification attempt 3/3
+[2026-06-12 11:33:42] WARNING  pillsafe.decision — FAILED after 3 attempts — lockout
+[2026-06-12 11:33:44] INFO     pillsafe.camera — Camera stopped
+[2026-06-12 11:37:50] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-12 11:38:02] INFO     pillsafe.camera — Camera started at 640x480
+[2026-06-12 11:38:02] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-12 11:38:02] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-12 11:38:02] INFO     pillsafe.facenet — Embedding store ready — 0 enrolled user(s)
+[2026-06-12 11:38:22] INFO     pillsafe.facenet — Generating embeddings for user 2 (20 images)
+[2026-06-12 11:38:23] WARNING  pillsafe.facenet — User 2: dropped 7 outlier sample(s) (bad crops) out of 20
+[2026-06-12 11:38:23] INFO     pillsafe.facenet — User 2: saved 13 embeddings -> data/dataset\2\embeddings.npy
+[2026-06-12 11:38:23] INFO     pillsafe.facenet — Training complete — 1 user(s), 13 total embeddings
+[2026-06-12 11:38:23] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-12 11:38:23] INFO     pillsafe.facenet — Loaded 13 embeddings for user 2
+[2026-06-12 11:38:23] INFO     pillsafe.facenet — Embedding store ready — 1 enrolled user(s)
+[2026-06-12 11:38:24] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-12 11:38:27] INFO     pillsafe.decision — Verification attempt 1/3
+[2026-06-12 11:38:27] INFO     pillsafe.facenet — Prediction: user=2, cosine_dist=0.0709, confidence=92.9
+[2026-06-12 11:38:27] INFO     pillsafe.decision — ACCEPTED attempt 1: user=2 confidence=92.9
+[2026-06-12 11:38:29] INFO     pillsafe.camera — Camera stopped
+[2026-06-12 11:39:08] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-12 11:39:20] INFO     pillsafe.camera — Camera started at 640x480
+[2026-06-12 11:39:20] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-12 11:39:20] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-12 11:39:20] INFO     pillsafe.facenet — Loaded 13 embeddings for user 2
+[2026-06-12 11:39:20] INFO     pillsafe.facenet — Embedding store ready — 1 enrolled user(s)
+[2026-06-12 11:39:23] INFO     pillsafe.facenet — Prediction: user=2, cosine_dist=0.1448, confidence=85.5
+[2026-06-12 11:39:23] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-12 11:39:26] INFO     pillsafe.decision — Verification attempt 1/3
+[2026-06-12 11:39:26] INFO     pillsafe.facenet — Prediction: user=2, cosine_dist=0.1362, confidence=86.4
+[2026-06-12 11:39:26] INFO     pillsafe.decision — ACCEPTED attempt 1: user=2 confidence=86.4
+[2026-06-12 11:39:29] INFO     pillsafe.camera — Camera stopped
+[2026-06-12 11:41:46] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-12 11:41:58] INFO     pillsafe.camera — Camera started at 640x480
+[2026-06-12 11:41:58] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-12 11:41:58] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-12 11:41:58] INFO     pillsafe.facenet — Loaded 13 embeddings for user 2
+[2026-06-12 11:41:58] INFO     pillsafe.facenet — Embedding store ready — 1 enrolled user(s)
+[2026-06-12 11:42:01] INFO     pillsafe.facenet — Prediction: user=2, cosine_dist=0.7842, confidence=21.6
+[2026-06-12 11:42:01] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-12 11:42:05] INFO     pillsafe.decision — Verification attempt 1/3
+[2026-06-12 11:42:05] INFO     pillsafe.facenet — Prediction: user=2, cosine_dist=0.1926, confidence=80.7
+[2026-06-12 11:42:05] INFO     pillsafe.decision — ACCEPTED attempt 1: user=2 confidence=80.7
+[2026-06-12 11:42:07] INFO     pillsafe.camera — Camera stopped
+[2026-06-12 11:43:48] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-12 11:43:59] INFO     pillsafe.camera — Camera started at 640x480
+[2026-06-12 11:44:00] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-12 11:44:00] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-12 11:44:00] INFO     pillsafe.facenet — Loaded 13 embeddings for user 2
+[2026-06-12 11:44:00] INFO     pillsafe.facenet — Embedding store ready — 1 enrolled user(s)
+[2026-06-12 11:44:03] INFO     pillsafe.facenet — Prediction: user=2, cosine_dist=0.1487, confidence=85.1
+[2026-06-12 11:44:03] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-12 11:44:06] INFO     pillsafe.decision — Verification attempt 1/3
+[2026-06-12 11:44:06] INFO     pillsafe.facenet — Prediction: user=2, cosine_dist=0.1224, confidence=87.8
+[2026-06-12 11:44:06] INFO     pillsafe.decision — ACCEPTED attempt 1: user=2 confidence=87.8
+[2026-06-12 11:44:09] INFO     pillsafe.camera — Camera stopped

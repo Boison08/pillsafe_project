@@ -313,16 +313,17 @@ class FaceNetRecogniser:
                 continue
 
             emb_array = np.array(embeddings, dtype=np.float32)
+            emb_array = self._drop_outlier_embeddings(user_id, emb_array)
             emb_file = self._embeddings_file(user_id)
             np.save(emb_file, emb_array)
 
             self.user_embeddings[user_id] = emb_array
             total_users += 1
-            total_embeddings += len(embeddings)
+            total_embeddings += len(emb_array)
 
             logger.info(
                 "User %d: saved %d embeddings -> %s",
-                user_id, len(embeddings), emb_file,
+                user_id, len(emb_array), emb_file,
             )
 
         logger.info(
@@ -330,6 +331,33 @@ class FaceNetRecogniser:
             total_users, total_embeddings,
         )
         return total_users > 0
+
+    # Haar occasionally hands the enroller a non-face crop (wall,
+    # motion blur, half a face). Those samples sit far from the rest
+    # of the user's cluster, so anything whose median distance to its
+    # siblings exceeds this is treated as a bad capture and dropped.
+    OUTLIER_MEDIAN_DISTANCE = 0.45
+
+    def _drop_outlier_embeddings(
+        self, user_id: int, emb_array: np.ndarray
+    ) -> np.ndarray:
+        """Remove embeddings of bad captures before saving a user's set."""
+        if len(emb_array) < 5:
+            return emb_array
+
+        sims = emb_array @ emb_array.T
+        np.fill_diagonal(sims, np.nan)
+        median_dist = 1.0 - np.nanmedian(sims, axis=1)
+        keep = median_dist <= self.OUTLIER_MEDIAN_DISTANCE
+
+        dropped = int((~keep).sum())
+        if dropped and keep.sum() >= 5:
+            logger.warning(
+                "User %d: dropped %d outlier sample(s) (bad crops) "
+                "out of %d", user_id, dropped, len(emb_array),
+            )
+            return emb_array[keep]
+        return emb_array
 
     # ────────────────────────────────────────────────────────────
     # Prediction
@@ -340,7 +368,10 @@ class FaceNetRecogniser:
 
         Method:
           - Cosine distance between the probe and every stored embedding.
-          - Mean distance per user.
+          - Score per user = mean of the K nearest distances (K=3).
+            Enrolment deliberately captures varied poses, so averaging
+            over ALL samples penalises a genuine match — the probe can
+            only ever resemble a few of the stored angles at once.
           - Best (lowest distance) user wins.
           - Confidence = max(0, (1 - distance) × 100).
 
@@ -362,17 +393,18 @@ class FaceNetRecogniser:
         best_distance = float("inf")
 
         for user_id, stored_embeddings in self.user_embeddings.items():
-            distances = [
+            distances = sorted(
                 cosine(probe, stored) for stored in stored_embeddings
-            ]
-            avg_dist = float(np.mean(distances))
+            )
+            k = min(3, len(distances))
+            top_k_dist = float(np.mean(distances[:k]))
 
             logger.debug(
-                "User %d: avg cosine distance = %.4f", user_id, avg_dist
+                "User %d: top-%d cosine distance = %.4f", user_id, k, top_k_dist
             )
 
-            if avg_dist < best_distance:
-                best_distance = avg_dist
+            if top_k_dist < best_distance:
+                best_distance = top_k_dist
                 best_user_id = user_id
 
         # Distance → confidence  (0 – 100 scale)
