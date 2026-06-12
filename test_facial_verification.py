@@ -67,6 +67,7 @@ try:
     from core.facenet_recogniser import FaceNetRecogniser
     from core.decision import DecisionEngine, VerificationResult
     from enrollment.enrol_user import EnrolmentManager
+    from database.db_manager import DatabaseManager
     print("[OK] All facial recognition modules imported successfully")
     print("[OK] FaceNet (MediaPipe) recogniser loaded")
 except Exception as e:
@@ -741,6 +742,14 @@ if 'recogniser' not in locals():
 # Initialize Decision Engine (without liveness)
 decision_engine = DecisionEngine(camera, detector, recogniser)
 
+# Database connection for looking up enrolled user details after verification
+try:
+    db = DatabaseManager()
+    print("[OK] Database connected for user detail lookup")
+except Exception as e:
+    print(f"[WARNING] Could not connect to database: {e}")
+    db = None
+
 print("=" * 70)
 print("FACENET RECOGNITION PIPELINE TEST")
 print("=" * 70)
@@ -808,9 +817,30 @@ print()
 
 if outcome.result == VerificationResult.ACCEPTED:
     print("✓ Verification SUCCESSFUL!")
-    print(f"  User ID: {outcome.user_id}")
-    if outcome.confidence is not None:
-        print(f"  Confidence: {outcome.confidence:.1f}")
+
+    # Look up the enrolled user's details from the database
+    verified_user = db.get_user(outcome.user_id) if db else None
+
+    if verified_user:
+        enrol = "Enrolled" if verified_user["enrolment_status"] else "Not enrolled"
+        print()
+        print("  " + "-" * 40)
+        print(f"  Welcome, {verified_user['full_name']}!")
+        print("  " + "-" * 40)
+        print(f"  User ID:          {verified_user['user_id']}")
+        print(f"  Full name:        {verified_user['full_name']}")
+        print(f"  Caregiver phone:  {verified_user['caregiver_phone']}")
+        print(f"  Compartment:      {verified_user['compartment_index']}")
+        print(f"  Enrolment status: {enrol}")
+        if outcome.confidence is not None:
+            print(f"  Match confidence: {outcome.confidence:.1f}")
+    else:
+        # Recognised by the model but no matching DB record
+        print(f"  User ID: {outcome.user_id}")
+        if outcome.confidence is not None:
+            print(f"  Confidence: {outcome.confidence:.1f}")
+        print("  [WARNING] No database record found for this user ID")
+
     print()
     print("  Pipeline components working correctly:")
     print("  ✓ Face detection")
@@ -876,6 +906,9 @@ print(f"Result:     {outcome.result.value}")
 print(f"Time:       {elapsed_time:.1f} seconds")
 
 if outcome.result == VerificationResult.ACCEPTED:
+    summary_user = db.get_user(outcome.user_id) if db else None
+    if summary_user:
+        print(f"User:       {summary_user['full_name']} (compartment {summary_user['compartment_index']})")
     print(f"User ID:    {outcome.user_id}")
     print(f"Confidence: {outcome.confidence:.1f}")
 elif outcome.result == VerificationResult.REJECTED:

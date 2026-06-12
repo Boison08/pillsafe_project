@@ -51,20 +51,31 @@ class FaceDetector:
             return []
         return [(x, y, w, h) for (x, y, w, h) in faces]
 
-    def extract_roi(self, grey_frame: np.ndarray,
+    def extract_roi(self, source_frame: np.ndarray,
                     bbox: tuple[int, int, int, int]) -> np.ndarray:
-        """Crop the face region and resize to standard dimensions."""
+        """Crop the face region and resize to standard dimensions.
+
+        The ROI is cropped from `source_frame` as-is (no greyscale
+        conversion or histogram equalisation), so a colour frame yields
+        a colour ROI. MobileFaceNet is a colour model — feeding it
+        greyscale faces produces weak, unstable embeddings.
+        """
         x, y, w, h = bbox
-        roi = grey_frame[y:y + h, x:x + w]
+        roi = source_frame[y:y + h, x:x + w]
         return cv2.resize(roi, self.image_size)
 
     def detect_and_extract(self, frame: np.ndarray) -> list[tuple[np.ndarray, tuple]]:
         """Full pipeline: preprocess → detect → extract ROIs.
-        Returns list of (roi, bbox) tuples."""
+        Returns list of (roi, bbox) tuples.
+
+        Detection runs on the greyscale/equalised image (best for Haar),
+        but ROIs are cropped from the original colour `frame` so the
+        recogniser receives colour faces.
+        """
         grey = self.preprocess(frame)
         faces = self.detect_faces(grey)
         results = []
         for bbox in faces:
-            roi = self.extract_roi(grey, bbox)
+            roi = self.extract_roi(frame, bbox)
             results.append((roi, bbox))
         return results
