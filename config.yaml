@@ -7,8 +7,8 @@
 face:
   confidence_threshold: 60          # Minimum confidence (0–100) to accept a match
   distance_threshold: 0.6           # Max cosine distance for a valid match
-  max_retries: 3
-  sample_count: 20
+  max_retries: 8
+  sample_count: 50
   image_size: [112, 112]            # MobileFaceNet input size (H, W)
   cascade_path: "haarcascade_frontalface_default.xml"
   scale_factor: 1.1        # Smaller = more thorough scan (slower)
