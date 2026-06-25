@@ -87,3 +87,29 @@ hotspot:
   dhcp_range_start: "192.168.4.10"
   dhcp_range_end: "192.168.4.50"
   dhcp_lease_time: "24h"
+
+# ── Voice Recognition (additions to config.yaml) ──────────────────────────
+voice:
+  enabled: true                   # set false to disable voice auth entirely
+  sample_rate: 16000              # Hz — INMP441 native sample rate
+  record_duration_sec: 3          # seconds recorded per utterance
+  n_mfcc: 40                      # MFCC coefficient count
+  enrol_samples: 3                # utterances captured during enrolment
+  similarity_threshold: 0.82      # cosine similarity floor for ACCEPT
+  device_index: null              # null = OS default input; set int for specific device
+  models_dir: "models/voice"      # where .npy templates are stored
+
+# ── Hardware additions ─────────────────────────────────────────────────────
+hardware:
+  i2s_mic:
+    enabled: true
+    # INMP441 wiring (BCM numbering):
+    #   SCK  → GPIO 18   (I2S bit clock)
+    #   WS   → GPIO 19   (I2S word select / LRCLK)
+    #   SD   → GPIO 20   (I2S data in)
+    #   VDD  → 3.3V
+    #   GND  → GND
+    #   L/R  → GND       (select left channel)
+    bclk_pin: 18
+    lrclk_pin: 19
+    data_pin: 20

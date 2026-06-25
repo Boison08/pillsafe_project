@@ -9,6 +9,7 @@ from flask import Flask, request, jsonify
 
 from database.db_manager import DatabaseManager
 from enrollment.enrol_user import EnrolmentManager
+from core import voice_recogniser as vr
 from utils.config import get_config
 from utils.logger import setup_logger
 
@@ -116,6 +117,61 @@ def create_app(db: DatabaseManager,
         status_code = 200 if success else 400
         return jsonify({"status": "success" if success else "error",
                         "data" if success else "error": message}), status_code
+
+    # ── Voice Endpoints (FR-57 / FR-56) ─────────────────────
+
+    @app.route("/voice/challenge", methods=["GET"])
+    @require_auth
+    def get_voice_challenge():
+        prompt = vr.get_random_challenge()
+        return jsonify({"status": "success", "data": {"prompt": prompt}}), 200
+
+    @app.route("/users/<int:user_id>/enrol/voice", methods=["POST"])
+    @require_auth
+    def enrol_voice(user_id):
+        if not enrolment_manager:
+            return jsonify({"status": "error", "error": "Enrolment not available"}), 503
+        result = vr.enrol_user(user_id)
+        if result.get("success"):
+            return jsonify({"status": "success", "data": result}), 200
+        return jsonify({"status": "error", "error": result.get("error", "unknown error")}), 400
+
+    @app.route("/users/<int:user_id>/enrol/status", methods=["GET"])
+    @require_auth
+    def enrol_status(user_id):
+        user = db.get_user(user_id)
+        if not user:
+            return jsonify({"status": "error", "error": "User not found"}), 404
+
+        return jsonify({
+            "status": "success",
+            "data": {
+                "user_id": user_id,
+                "face_enrolled": bool(user["enrolment_status"]),
+                "voice_enrolled": vr.is_enrolled(user_id),
+            }
+        }), 200
+
+    @app.route("/dispense/request", methods=["POST"])
+    @require_auth
+    def dispense_request():
+        body = request.get_json(silent=True) or {}
+        user_id = body.get("user_id")
+        schedule_id = body.get("schedule_id")
+        auth_mode = body.get("auth_mode", "face")
+
+        if auth_mode not in ("face", "voice"):
+            return jsonify({"status": "error", "error": "Invalid auth_mode"}), 400
+        if not user_id:
+            return jsonify({"status": "error", "error": "user_id required"}), 400
+
+        app.config["PENDING_AUTH"] = {
+            "user_id": user_id,
+            "schedule_id": schedule_id,
+            "mode": auth_mode,
+        }
+
+        return jsonify({"status": "success", "data": {"accepted": True}}), 200
 
     # ── Schedule Endpoints (FR-20) ───────────────────────────
 

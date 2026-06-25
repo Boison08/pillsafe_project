@@ -55,7 +55,7 @@ from scheduler.schedule_controller import ScheduleController, DispenseEvent
 from alerts.alert_service import AlertService
 from enrollment.enrol_user import EnrolmentManager
 from api.routes import create_app
-
+from core.voice_recogniser import VoiceRecogniser
 
 class PillSafeSystem:
     """Main system controller — orchestrates all PillSafe components."""
@@ -63,7 +63,7 @@ class PillSafeSystem:
     def __init__(self):
         logger.info("=" * 60)
         logger.info("PillSafe Smart Pill Dispenser — Starting Up")
-        logger.info("=" * 60)
+        logger.info("=" * 60) 
 
         cfg = get_config()
 
@@ -84,13 +84,19 @@ class PillSafeSystem:
         logger.info("Initialising facial recognition pipeline...")
         self.detector = FaceDetector()
         self.recogniser = FaceNetRecogniser()
+        try:
+            self.voice_recogniser = VoiceRecogniser()
+            logger.info("Voice recogniser initialised")
+        except Exception as e:
+            logger.warning("Voice recogniser unavailable: %s — voice auth disabled", e)
+            self.voice_recogniser = None
         self.decision_engine = DecisionEngine(
-            self.camera, self.detector, self.recogniser
-        )
+            self.camera, self.detector, self.recogniser, self.voice_recogniser
+)
 
         # ── Step 4: Enrolment Manager ────────────────────────
         self.enrolment = EnrolmentManager(
-            self.camera, self.detector, self.recogniser, self.db
+            self.camera, self.detector, self.recogniser, self.db, self.voice_recogniser
         )
 
         # ── Step 5: Alert Service ────────────────────────────
@@ -173,8 +179,13 @@ class PillSafeSystem:
         # Step 2: Activate camera and run verification
         self.camera.start()
 
+        # Get auth mode chosen by user from the API (POST /dispense/request)
+        pending = self.app.config.get("PENDING_AUTH", {})
+        auth_mode = pending.get("mode", "face")
+
         outcome = self.decision_engine.run_verification(
-            expected_user_id=event.user_id
+            expected_user_id=event.user_id,
+            auth_mode=auth_mode,
         )
 
         if outcome.result == VerificationResult.ACCEPTED:

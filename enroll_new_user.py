@@ -33,9 +33,24 @@ from core.detector import FaceDetector
 from core.facenet_recogniser import FaceNetRecogniser
 from database.db_manager import DatabaseManager
 
+try:
+    from core.voice_recogniser import VoiceRecogniser
+except Exception:  # pragma: no cover - voice auth is optional when audio deps are missing
+    VoiceRecogniser = None
+
 logger = setup_logger("pillsafe.enroll")
 
 WINDOW_NAME = "PillSafe Enrolment — press 'q' to abort"
+VOICE_PROMPTS = [
+    "open my medicine",
+    "dispense my pills",
+    "pillsafe unlock",
+]
+VOICE_PROMPTS = [
+    "open my medicine",
+    "dispense my pills",
+    "pillsafe unlock",
+]
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -194,6 +209,15 @@ def main():
     camera = Camera(resolution=(640, 480))
     detector = FaceDetector()
     recogniser = FaceNetRecogniser()
+    voice_recogniser = None
+
+    if VoiceRecogniser is not None and getattr(cfg, "voice", None) and getattr(cfg.voice, "enabled", False):
+        try:
+            voice_recogniser = VoiceRecogniser()
+            print("Voice recogniser initialised")
+        except Exception as exc:
+            print(f"WARNING: Voice recogniser unavailable: {exc} — voice enrolment will be skipped")
+            voice_recogniser = None
 
     if not recogniser.model_loaded:
         print("ERROR: MobileFaceNet model not loaded.")
@@ -251,6 +275,23 @@ def main():
                     db.set_enrolment_status(user_id, enrolled=True)
                     print(f"SUCCESS: '{name}' (ID {user_id}) is enrolled "
                           f"and ready for verification.")
+
+                    if voice_recogniser is not None:
+                        print("Starting voice enrolment...")
+                        print("You will be asked to say a few short phrases.")
+                        print("Press ENTER to begin voice enrolment.")
+                        input()
+                        try:
+                            voice_result = voice_recogniser.enrol_user(user_id, prompts=VOICE_PROMPTS)
+                        except Exception as exc:
+                            print(f"WARNING: Voice enrolment failed: {exc}")
+                        else:
+                            if voice_result.get("success"):
+                                print(f"Voice template saved for user {user_id}.")
+                            else:
+                                print(f"WARNING: Voice enrolment failed: {voice_result.get('error', 'unknown error')}")
+                    else:
+                        print("Voice enrolment skipped.")
                 else:
                     print("ERROR: Embedding training failed — see logs.")
 

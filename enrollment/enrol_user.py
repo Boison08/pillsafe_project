@@ -18,6 +18,16 @@ from database.db_manager import DatabaseManager
 from utils.config import get_config
 from utils.logger import setup_logger
 
+try:
+    from core.voice_recogniser import VoiceRecogniser
+except Exception:  # pragma: no cover - voice auth is optional when audio deps are missing
+    VoiceRecogniser = None
+
+try:
+    from core.voice_recogniser import delete_template as delete_voice_template
+except Exception:  # pragma: no cover - voice auth is optional when audio deps are missing
+    delete_voice_template = None
+
 logger = setup_logger("pillsafe.enrolment")
 
 
@@ -25,7 +35,8 @@ class EnrolmentManager:
     """Handles facial enrolment: sample capture, storage, and training."""
 
     def __init__(self, camera: Camera, detector: FaceDetector,
-                 recogniser: FaceNetRecogniser, db: DatabaseManager):
+                 recogniser: FaceNetRecogniser, db: DatabaseManager,
+                 voice_recogniser: VoiceRecogniser | None = None):
         cfg = get_config()
         self.camera = camera
         self.detector = detector
@@ -33,6 +44,34 @@ class EnrolmentManager:
         self.db = db
         self.sample_count = cfg.face.sample_count
         self.dataset_path = cfg.face.dataset_path
+        self.voice_enabled = bool(getattr(cfg, "voice", None) and getattr(cfg.voice, "enabled", False))
+        self.voice_recogniser = voice_recogniser
+
+    def _get_voice_recogniser(self) -> VoiceRecogniser | None:
+        if not self.voice_enabled:
+            return None
+        if self.voice_recogniser is not None:
+            return self.voice_recogniser
+        if VoiceRecogniser is None:
+            logger.warning("Voice enrolment disabled: voice module unavailable")
+            return None
+        self.voice_recogniser = VoiceRecogniser()
+        return self.voice_recogniser
+
+    def enrol_voice_user(self, user_id: int) -> tuple[bool, str]:
+        voice = self._get_voice_recogniser()
+        if voice is None:
+            return True, "Voice enrolment skipped"
+
+        logger.info("Starting voice enrolment for user %d", user_id)
+        try:
+            result = voice.enrol_user(user_id)
+        except Exception as exc:
+            return False, f"Voice enrolment failed: {exc}"
+
+        if result.get("success"):
+            return True, f"Voice template saved for user {user_id}"
+        return False, f"Voice enrolment failed: {result.get('error', 'unknown error')}"
 
     def enrol_user(self, user_id: int) -> tuple[bool, str]:
         """
@@ -110,7 +149,14 @@ class EnrolmentManager:
         # Step 5: Update enrolment status in database
         self.db.set_enrolment_status(user_id, enrolled=True)
 
+        voice_ok, voice_message = self.enrol_voice_user(user_id)
+
         msg = f"Enrolment complete: {captured} samples captured and model retrained"
+        if voice_ok:
+            msg = f"{msg}; {voice_message}"
+        else:
+            logger.warning(voice_message)
+            msg = f"{msg}; {voice_message}"
         logger.info(msg)
         return True, msg
 
@@ -121,6 +167,12 @@ class EnrolmentManager:
             import shutil
             shutil.rmtree(user_dir)
             logger.info("Removed facial data for user %d", user_id)
+
+        if delete_voice_template is not None:
+            try:
+                delete_voice_template(user_id)
+            except Exception as exc:
+                logger.warning("Failed to remove voice template for user %d: %s", user_id, exc)
 
         # Retrain model without this user's data
         self.recogniser.train()
