@@ -730,3 +730,37 @@
 [2026-06-25 16:26:15] INFO     pillsafe.facenet — User 6: saved 50 embeddings -> data/dataset\6\embeddings.npy
 [2026-06-25 16:26:15] INFO     pillsafe.facenet — Training complete — 4 user(s), 191 total embeddings
 [2026-06-25 16:26:27] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-25 18:07:32] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-25 18:07:33] WARNING  pillsafe.dispenser — RPi.GPIO not available — dispenser in simulation mode
+[2026-06-25 18:07:33] WARNING  pillsafe.ir_sensor — RPi.GPIO not available — IR sensors in simulation mode
+[2026-06-25 18:07:33] WARNING  pillsafe.rtc — smbus2 not available — RTC using system clock fallback
+[2026-06-25 18:07:33] INFO     pillsafe.main — ============================================================
+[2026-06-25 18:07:33] INFO     pillsafe.main — PillSafe Smart Pill Dispenser — Starting Up
+[2026-06-25 18:07:33] INFO     pillsafe.main — ============================================================
+[2026-06-25 18:07:33] INFO     pillsafe.main — Initialising database...
+[2026-06-25 18:07:33] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-25 18:07:33] INFO     pillsafe.main — Initialising hardware modules...
+[2026-06-25 18:07:33] INFO     pillsafe.dispenser — Dispenser GPIO simulated — pin 18
+[2026-06-25 18:07:33] INFO     pillsafe.ir_sensor — IR sensors simulated on GPIO 23, 24
+[2026-06-25 18:07:33] INFO     pillsafe.buzzer — Buzzer simulated on GPIO 25
+[2026-06-25 18:07:33] ERROR    pillsafe.gsm — Serial port /dev/ttyUSB0 error: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+[2026-06-25 18:07:33] INFO     pillsafe.main — Initialising facial recognition pipeline...
+[2026-06-25 18:07:33] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-25 18:07:33] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-25 18:07:33] INFO     pillsafe.facenet — Loaded 50 embeddings for user 10
+[2026-06-25 18:07:33] INFO     pillsafe.facenet — Loaded 44 embeddings for user 4
+[2026-06-25 18:07:33] INFO     pillsafe.facenet — Loaded 47 embeddings for user 5
+[2026-06-25 18:07:33] INFO     pillsafe.facenet — Loaded 50 embeddings for user 6
+[2026-06-25 18:07:33] INFO     pillsafe.facenet — Embedding store ready — 4 enrolled user(s)
+[2026-06-25 18:07:33] INFO     pillsafe.main — Voice recogniser initialised
+[2026-06-25 18:07:33] INFO     pillsafe.alerts — Alert service started
+[2026-06-25 18:07:33] INFO     pillsafe.scheduler — Scheduler started (polling every 60s, grace=15 min)
+[2026-06-25 18:07:33] INFO     pillsafe.main — Flask API started on 0.0.0.0:5000
+[2026-06-25 18:07:33] INFO     pillsafe.main — System ready — RTC time: 2026-06-25 18:07:33
+[2026-06-25 18:07:33] INFO     pillsafe.main — Entering idle state — waiting for dispensing events...
+[2026-06-25 18:08:34] INFO     pillsafe.main — Shutdown signal received (signal 2)
+[2026-06-25 18:08:34] INFO     pillsafe.main — Shutting down PillSafe...
+[2026-06-25 18:08:44] INFO     pillsafe.scheduler — Scheduler stopped
+[2026-06-25 18:08:49] INFO     pillsafe.alerts — Alert service stopped
+[2026-06-25 18:08:49] INFO     pillsafe.main — PillSafe shut down complete
+[2026-06-25 18:08:49] INFO     pillsafe.main — ============================================================
