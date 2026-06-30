@@ -28,6 +28,9 @@ class DispenseEvent:
     schedule_id: int
     scheduled_time: str           # HH:MM
     grace_deadline: datetime      # scheduled_time + grace_period
+    slot_index: int = 0           # which of the 9 slots in the compartment
+    dosage: str | None = None     # human-readable dosage (e.g. "1 tablet")
+    pills_per_dose: int = 1        # pills released per dispense (inventory math)
 
 
 class ScheduleController:
@@ -97,6 +100,7 @@ class ScheduleController:
         now = self.rtc.get_time()
         current_time_str = now.strftime("%H:%M")
         current_date = now.strftime("%Y-%m-%d")
+        current_weekday = now.weekday()  # 0=Mon .. 6=Sun
 
         # Reset triggered set at midnight
         if current_date != self._last_date:
@@ -112,12 +116,17 @@ class ScheduleController:
             if schedule_id in self._triggered_today:
                 continue
 
+            # Skip if today isn't one of this schedule's repeat days
+            if not self._runs_today(sched.get("repeat_days"), current_weekday):
+                continue
+
             dose_time = sched["dose_time"]  # "HH:MM"
 
             # Check ±1 minute tolerance
             if self._is_time_match(current_time_str, dose_time):
-                logger.info("Schedule match: user %d, medication '%s' at %s",
-                             sched["user_id"], sched["medication_name"], dose_time)
+                logger.info("Schedule match: user %d, medication '%s' at %s (slot %s)",
+                             sched["user_id"], sched["medication_name"], dose_time,
+                             sched.get("slot_index", 0))
 
                 # Mark as triggered to prevent duplicates
                 self._triggered_today.add(schedule_id)
@@ -132,6 +141,9 @@ class ScheduleController:
                     schedule_id=schedule_id,
                     scheduled_time=dose_time,
                     grace_deadline=grace_deadline,
+                    slot_index=sched.get("slot_index", 0) or 0,
+                    dosage=sched.get("dosage"),
+                    pills_per_dose=sched.get("pills_per_dose", 1) or 1,
                 )
 
                 # Dispatch to callback
@@ -142,6 +154,28 @@ class ScheduleController:
                         args=(event,),
                         daemon=True,
                     ).start()
+
+    @staticmethod
+    def _runs_today(repeat_days: str | None, weekday: int) -> bool:
+        """
+        Decide whether a schedule runs on the given weekday.
+
+        ``repeat_days`` is a CSV of weekday ints (0=Mon .. 6=Sun). An empty
+        or NULL value means the schedule runs every day (FR-13).
+        """
+        if not repeat_days:
+            return True
+        try:
+            days = {
+                int(tok) for tok in str(repeat_days).split(",")
+                if tok.strip() != ""
+            }
+        except ValueError:
+            # Malformed value — fail open so a dose is never silently skipped
+            return True
+        if not days:
+            return True
+        return weekday in days
 
     @staticmethod
     def _is_time_match(current: str, scheduled: str) -> bool:

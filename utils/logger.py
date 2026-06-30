@@ -31,8 +31,16 @@ def setup_logger(name: str = "pillsafe") -> logging.Logger:
     fh.setFormatter(formatter)
     logger.addHandler(fh)
 
+    import io
     import sys
-    ch = logging.StreamHandler(stream=open(sys.stdout.fileno(), mode="w", encoding="utf-8", closefd=False))
+    # Prefer a UTF-8 console stream so emoji/box-drawing characters in log
+    # messages don't crash on Windows (cp1252). Fall back to the raw stdout
+    # when its file descriptor isn't available (e.g. notebooks / pytest capture).
+    try:
+        console_stream = open(sys.stdout.fileno(), mode="w", encoding="utf-8", closefd=False)
+    except (AttributeError, OSError, ValueError, io.UnsupportedOperation):
+        console_stream = sys.stdout
+    ch = logging.StreamHandler(stream=console_stream)
     ch.setLevel(log_level)
     ch.setFormatter(formatter)
     logger.addHandler(ch)

@@ -219,6 +219,9 @@ def verify_user(user_id: int) -> dict:
 
     voice_cfg = getattr(cfg, "voice", None) if cfg is not None else None
     threshold = getattr(voice_cfg, "similarity_threshold", SIM_THRESHOLD)
+    sample_rate = getattr(voice_cfg, "sample_rate", SAMPLE_RATE) if voice_cfg is not None else SAMPLE_RATE
+    duration_sec = getattr(voice_cfg, "record_duration_sec", DURATION_SEC) if voice_cfg is not None else DURATION_SEC
+    mfcc_count = getattr(voice_cfg, "n_mfcc", N_MFCC) if voice_cfg is not None else N_MFCC
     path = _template_path(user_id)
     if not path.exists():
         logger.warning("No voice template found for user %d", user_id)
@@ -227,8 +230,8 @@ def verify_user(user_id: int) -> dict:
     template = np.load(path)
 
     try:
-        audio = _record(sample_rate=sample_rate)
-        live_vec = _extract_mfcc(audio, sample_rate=sample_rate, n_mfcc=getattr(voice_cfg, "n_mfcc", N_MFCC) if voice_cfg is not None else N_MFCC)
+        audio = _record(duration=duration_sec, sample_rate=sample_rate)
+        live_vec = _extract_mfcc(audio, sample_rate=sample_rate, n_mfcc=mfcc_count)
     except Exception as exc:
         logger.error("Verification recording failed: %s", exc)
         return {"verified": False, "error": str(exc)}

@@ -4,6 +4,8 @@ Provides JSON endpoints for the Flutter mobile application (SDR §5).
 All endpoints except /health require Bearer token authentication (FR-22).
 """
 
+import os
+import hmac
 import functools
 from flask import Flask, request, jsonify
 
@@ -15,6 +17,8 @@ from utils.logger import setup_logger
 
 logger = setup_logger("pillsafe.api")
 
+DEFAULT_TOKEN = "CHANGE_ME_ON_FIRST_SETUP"
+
 
 def create_app(db: DatabaseManager,
                enrolment_manager: EnrolmentManager | None = None,
@@ -24,7 +28,14 @@ def create_app(db: DatabaseManager,
     """
     app = Flask(__name__)
     cfg = get_config()
-    api_token = cfg.api.token
+    # Prefer an environment-provided token; fall back to config. Warn loudly
+    # if the insecure default is still in use (FR-22).
+    api_token = os.environ.get("PILLSAFE_API_TOKEN") or cfg.api.token
+    if api_token == DEFAULT_TOKEN:
+        logger.warning(
+            "API token is still the insecure default — set api.token in "
+            "config.yaml or the PILLSAFE_API_TOKEN environment variable."
+        )
 
     # ── Authentication Middleware ─────────────────────────────
 
@@ -36,7 +47,8 @@ def create_app(db: DatabaseManager,
             if not auth_header.startswith("Bearer "):
                 return jsonify({"status": "error", "error": "Missing Bearer token"}), 401
             token = auth_header.split("Bearer ", 1)[1]
-            if token != api_token:
+            # Constant-time comparison to avoid token timing attacks
+            if not hmac.compare_digest(token, api_token):
                 return jsonify({"status": "error", "error": "Invalid token"}), 401
             return f(*args, **kwargs)
         return decorated
@@ -195,7 +207,13 @@ def create_app(db: DatabaseManager,
                                 "error": f"Missing field: {field}"}), 400
         try:
             sid = db.create_schedule(
-                int(data["user_id"]), data["medication_name"], data["dose_time"]
+                int(data["user_id"]),
+                data["medication_name"],
+                data["dose_time"],
+                slot_index=int(data.get("slot_index", 0)),
+                dosage=data.get("dosage"),
+                pills_per_dose=int(data.get("pills_per_dose", 1)),
+                repeat_days=data.get("repeat_days"),
             )
             return jsonify({"status": "success",
                             "data": {"schedule_id": sid}}), 201
@@ -242,5 +260,64 @@ def create_app(db: DatabaseManager,
             return jsonify({"status": "success",
                             "data": {"acknowledged": log_id}}), 200
         return jsonify({"status": "error", "error": "Event not found"}), 404
+
+    # ── Inventory Endpoints ──────────────────────────────────
+
+    @app.route("/inventory", methods=["GET"])
+    @require_auth
+    def get_inventory():
+        compartment = request.args.get("compartment_index", type=int)
+        return jsonify({"status": "success",
+                        "data": db.get_inventory(compartment)}), 200
+
+    @app.route("/inventory", methods=["POST"])
+    @require_auth
+    def set_inventory():
+        data = request.get_json()
+        if not data:
+            return jsonify({"status": "error", "error": "JSON body required"}), 400
+        required = ["compartment_index", "slot_index", "pill_count"]
+        for field in required:
+            if field not in data:
+                return jsonify({"status": "error",
+                                "error": f"Missing field: {field}"}), 400
+        try:
+            db.upsert_inventory(
+                int(data["compartment_index"]),
+                int(data["slot_index"]),
+                int(data["pill_count"]),
+                medication_name=data.get("medication_name"),
+                low_threshold=(int(data["low_threshold"])
+                               if data.get("low_threshold") is not None else None),
+                user_id=data.get("user_id"),
+            )
+            return jsonify({"status": "success", "data": {"updated": True}}), 200
+        except Exception as e:
+            return jsonify({"status": "error", "error": str(e)}), 400
+
+    @app.route("/inventory/low", methods=["GET"])
+    @require_auth
+    def get_low_inventory():
+        return jsonify({"status": "success",
+                        "data": db.get_low_inventory()}), 200
+
+    # ── Notification (event feed) Endpoints ──────────────────
+
+    @app.route("/notifications", methods=["GET"])
+    @require_auth
+    def get_notifications():
+        user_id = request.args.get("user_id", type=int)
+        unread_only = request.args.get("unread", "").lower() in ("1", "true", "yes")
+        return jsonify({"status": "success",
+                        "data": db.get_notifications(user_id, unread_only)}), 200
+
+    @app.route("/notifications/<int:notification_id>/read", methods=["POST"])
+    @require_auth
+    def mark_notification_read(notification_id):
+        success = db.mark_notification_read(notification_id)
+        if success:
+            return jsonify({"status": "success",
+                            "data": {"read": notification_id}}), 200
+        return jsonify({"status": "error", "error": "Notification not found"}), 404
 
     return app

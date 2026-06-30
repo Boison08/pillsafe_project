@@ -46,11 +46,6 @@ VOICE_PROMPTS = [
     "dispense my pills",
     "pillsafe unlock",
 ]
-VOICE_PROMPTS = [
-    "open my medicine",
-    "dispense my pills",
-    "pillsafe unlock",
-]
 
 
 # ──────────────────────────────────────────────────────────────────

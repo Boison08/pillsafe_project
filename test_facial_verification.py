@@ -858,13 +858,6 @@ elif outcome.result == VerificationResult.REJECTED:
     print("  - Poor lighting conditions")
     print("  - Face angle not suitable")
 
-elif outcome.result == VerificationResult.LIVENESS_FAILED:
-    print("✗ Spoofing detected (liveness check failed)")
-    print()
-    print("  This happens when:")
-    print("  - Eye blinks not detected properly")
-    print("  - A photograph is shown instead of a real face")
-
 elif outcome.result == VerificationResult.NO_FACE:
     print("⚠ No face detected in any capture attempt")
     print()

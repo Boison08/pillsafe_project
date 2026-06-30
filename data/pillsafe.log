@@ -764,3 +764,42 @@
 [2026-06-25 18:08:49] INFO     pillsafe.alerts — Alert service stopped
 [2026-06-25 18:08:49] INFO     pillsafe.main — PillSafe shut down complete
 [2026-06-25 18:08:49] INFO     pillsafe.main — ============================================================
+[2026-06-30 12:01:15] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-30 12:01:22] INFO     pillsafe.camera — Camera started at 640x480
+[2026-06-30 12:01:22] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-30 12:01:22] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-30 12:01:22] INFO     pillsafe.facenet — Loaded 50 embeddings for user 10
+[2026-06-30 12:01:22] INFO     pillsafe.facenet — Loaded 44 embeddings for user 4
+[2026-06-30 12:01:22] INFO     pillsafe.facenet — Loaded 47 embeddings for user 5
+[2026-06-30 12:01:22] INFO     pillsafe.facenet — Loaded 50 embeddings for user 6
+[2026-06-30 12:01:22] INFO     pillsafe.facenet — Embedding store ready — 4 enrolled user(s)
+[2026-06-30 12:01:27] INFO     pillsafe.facenet — Prediction: user=6, cosine_dist=0.3033, confidence=69.7
+[2026-06-30 12:01:28] INFO     pillsafe.database — Migration: added Schedules.slot_index
+[2026-06-30 12:01:28] INFO     pillsafe.database — Migration: added Schedules.dosage
+[2026-06-30 12:01:28] INFO     pillsafe.database — Migration: added Schedules.pills_per_dose
+[2026-06-30 12:01:28] INFO     pillsafe.database — Migration: added Schedules.repeat_days
+[2026-06-30 12:01:28] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-30 12:01:31] INFO     pillsafe.decision — Face verification attempt 1/8
+[2026-06-30 12:01:32] INFO     pillsafe.decision — Face verification attempt 2/8
+[2026-06-30 12:01:33] INFO     pillsafe.decision — Face verification attempt 3/8
+[2026-06-30 12:01:34] INFO     pillsafe.decision — Face verification attempt 4/8
+[2026-06-30 12:01:35] INFO     pillsafe.decision — Face verification attempt 5/8
+[2026-06-30 12:01:35] INFO     pillsafe.facenet — Prediction: user=6, cosine_dist=0.2993, confidence=70.1
+[2026-06-30 12:01:35] INFO     pillsafe.decision — ACCEPTED attempt 5: user=6 confidence=70.0660 dist=0.2993
+[2026-06-30 12:01:37] INFO     pillsafe.camera — Camera stopped
+[2026-06-30 12:01:37] WARNING  pillsafe.dispenser — RPi.GPIO not available — dispenser in simulation mode
+[2026-06-30 12:01:37] WARNING  pillsafe.ir_sensor — RPi.GPIO not available — IR sensors in simulation mode
+[2026-06-30 12:01:37] WARNING  pillsafe.rtc — smbus2 not available — RTC using system clock fallback
+[2026-06-30 12:01:37] INFO     pillsafe.dispenser — Dispenser GPIO simulated — pins [12, 13, 16, 17, 26, 27]
+[2026-06-30 12:01:37] INFO     pillsafe.dispenser — Dispenser GPIO simulated — pins [12, 13, 16, 17, 26, 27]
+[2026-06-30 12:01:37] ERROR    pillsafe.dispenser — Invalid compartment: -1 (range 0–5)
+[2026-06-30 12:01:37] ERROR    pillsafe.dispenser — Invalid slot: 99 (range 0–8)
+[2026-06-30 12:01:38] INFO     pillsafe.database — Database initialised at C:\Users\Boison\AppData\Local\Temp\pytest-of-Boison\pytest-0\test_create_schedule_with_slot0\test.db
+[2026-06-30 12:01:38] INFO     pillsafe.database — Created user 'Ama Mensah' (id=1, compartment=0)
+[2026-06-30 12:01:38] INFO     pillsafe.database — Created schedule 1 for user 1: Metformin at 08:00 (slot 3)
+[2026-06-30 12:01:38] INFO     pillsafe.database — Database initialised at C:\Users\Boison\AppData\Local\Temp\pytest-of-Boison\pytest-0\test_create_schedule_rejects_b0\test.db
+[2026-06-30 12:01:38] INFO     pillsafe.database — Created user 'Kofi' (id=1, compartment=1)
+[2026-06-30 12:01:38] INFO     pillsafe.database — Database initialised at C:\Users\Boison\AppData\Local\Temp\pytest-of-Boison\pytest-0\test_inventory_decrement_and_l0\test.db
+[2026-06-30 12:01:38] INFO     pillsafe.database — Created user 'Yaa' (id=1, compartment=2)
+[2026-06-30 12:01:38] INFO     pillsafe.database — Database initialised at C:\Users\Boison\AppData\Local\Temp\pytest-of-Boison\pytest-0\test_notifications_feed0\test.db
+[2026-06-30 12:01:38] INFO     pillsafe.database — Created user 'Esi' (id=1, compartment=3)

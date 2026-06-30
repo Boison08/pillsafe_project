@@ -58,6 +58,7 @@ class DecisionEngine:
         self.voice_recogniser = voice_recogniser   # None if voice hardware unavailable
         self.max_retries = cfg.face.max_retries
         self.confidence_threshold = cfg.face.confidence_threshold
+        self.distance_threshold = getattr(cfg.face, "distance_threshold", 0.6)
 
     # ── Public entry point ─────────────────────────────────────────────────
 
@@ -109,10 +110,20 @@ class DecisionEngine:
             roi, bbox = max(detections, key=lambda d: d[1][2] * d[1][3])
 
             user_id, confidence = self.recogniser.predict(roi)
+            # confidence = (1 - cosine_distance) * 100  →  recover distance
+            distance = 1.0 - (confidence / 100.0)
 
-            if confidence >= self.confidence_threshold:
-                logger.info("ACCEPTED attempt %d: user=%d confidence=%.4f",
-                            attempt, user_id, confidence)
+            # The match must be (a) confident enough, (b) close enough in
+            # embedding space, and (c) the SAME person the dose is scheduled
+            # for. Without (c) any enrolled user could collect another
+            # patient's medication (security fix, FR-07/FR-08).
+            confident = confidence >= self.confidence_threshold
+            close_enough = distance <= self.distance_threshold
+            identity_ok = (expected_user_id is None) or (user_id == expected_user_id)
+
+            if confident and close_enough and identity_ok:
+                logger.info("ACCEPTED attempt %d: user=%d confidence=%.4f dist=%.4f",
+                            attempt, user_id, confidence, distance)
                 return VerificationOutcome(
                     result=VerificationResult.ACCEPTED,
                     user_id=user_id,
@@ -121,8 +132,12 @@ class DecisionEngine:
                     auth_mode="face",
                 )
             else:
-                logger.info("REJECTED attempt %d: predicted=%d confidence=%.4f",
-                            attempt, user_id, confidence)
+                logger.info(
+                    "REJECTED attempt %d: predicted=%s expected=%s confidence=%.4f "
+                    "dist=%.4f (confident=%s close=%s identity=%s)",
+                    attempt, user_id, expected_user_id, confidence, distance,
+                    confident, close_enough, identity_ok,
+                )
                 time.sleep(1)
 
         logger.warning("Face verification FAILED after %d attempts — lockout", self.max_retries)

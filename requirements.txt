@@ -28,3 +28,12 @@ Flask>=3.0.0                      # REST API server
 
 # Configuration
 PyYAML>=6.0                       # config.yaml loader
+
+# Voice authentication (optional — the system degrades gracefully if missing)
+# Required by core/voice_recogniser.py for I2S mic capture + MFCC features.
+sounddevice>=0.4.6               # Audio capture from the I2S/INMP441 microphone
+librosa>=0.10.0                  # MFCC feature extraction for speaker verification
+
+# Development / testing only (not needed on the Pi at runtime)
+# matplotlib>=3.8.0              # Used by test_facial_verification.py preview plots
+# pytest>=8.0                    # Unit tests in tests/  (pytest -q)

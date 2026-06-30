@@ -1,16 +1,22 @@
 """
 PillSafe — Dispensing Mechanism Controller
-Controls SG90 servo motor for a 6-compartment rotating carousel.
-Each compartment maps 1:1 to a user (SDR §4.4, FR-14).
+Each of the six compartments (one per patient) is a rotating cylinder with
+nine angular slots (~40° apart). Every compartment is driven by its own
+servo. Dispensing is rotation-only: the compartment's servo rotates so the
+target slot aligns with that compartment's fixed drop hole, and the pill
+falls by gravity down a delivery tube to the collection base. There is no
+gate — the IR sensors (see hardware/ir_sensor.py) confirm the drop and the
+pickup.
 
-GPIO Wiring:
-  - Servo signal → GPIO 18 (BCM) / Pin 12
-  - Servo VCC    → 5V  (Pin 2 or 4)
-  - Servo GND    → GND (Pin 6)
+GPIO Wiring (BCM numbering, one signal pin per compartment):
+  - Compartment 0..5 servo signals → config servo.pins (default 12,13,16,17,26,27)
+  - Each servo VCC → 5V, GND → common GND with the Pi
 
-Note on SG90 (0–180° range):
-  With 6 compartments across 180°, each slot = 30° apart.
-  For a full 360° carousel, use a continuous-rotation or 270° servo.
+Note on motor type:
+  The mechanism assumes 360°-capable positional servos so all nine slots
+  (9 × 40° = 360°) are reachable. Angle→duty is a linear positional map; for
+  true continuous-rotation servos this approximates position and may need
+  per-unit calibration of min_duty/max_duty/max_angle in config.yaml.
 """
 
 import time
@@ -28,84 +34,114 @@ except (ImportError, RuntimeError):
 
 
 class Dispenser:
-    """Controls a 6-slot rotating carousel via servo PWM."""
+    """Controls six per-compartment rotating cylinders via servo PWM."""
 
     def __init__(self):
         cfg = get_config()
-        self.pwm_pin = cfg.servo.pwm_pin
         self.frequency = cfg.servo.frequency_hz
         self.num_compartments = cfg.servo.num_compartments
+        self.num_slots = getattr(cfg.servo, "num_slots", 9)
         self.min_duty = cfg.servo.min_duty
         self.max_duty = cfg.servo.max_duty
         self.hold_time = cfg.servo.hold_time
+        self.max_angle = float(getattr(cfg.servo, "max_angle", 360.0))
 
-        # SG90 range is 0–180°, divide evenly among compartments
-        self.max_angle = 180.0
-        self.angle_per_slot = self.max_angle / self.num_compartments
-        self.angles = {
-            i: round(i * self.angle_per_slot, 1)
-            for i in range(self.num_compartments)
-        }
+        # One signal pin per compartment (BCM). Fall back to a single legacy
+        # pwm_pin for compartment 0 if a pins list isn't configured.
+        pins = getattr(cfg.servo, "pins", None)
+        if not pins:
+            legacy = getattr(cfg.servo, "pwm_pin", 18)
+            pins = [legacy]
+        self.pins = list(pins)
+        if len(self.pins) < self.num_compartments:
+            logger.warning(
+                "servo.pins has %d entries but num_compartments=%d — "
+                "compartments without a pin cannot be dispensed",
+                len(self.pins), self.num_compartments,
+            )
 
-        self._pwm = None
-        self._current_index = None
+        # Nine slots across the full rotation → 40° per slot by default
+        self.angle_per_slot = self.max_angle / self.num_slots
+
+        self._pwms: dict[int, "GPIO.PWM"] = {}
+        self._current_slot: dict[int, int] = {}
         self._setup_gpio()
 
     def _setup_gpio(self) -> None:
         if not GPIO_AVAILABLE:
-            logger.info("Dispenser GPIO simulated — pin %d", self.pwm_pin)
+            logger.info("Dispenser GPIO simulated — pins %s", self.pins)
             return
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.pwm_pin, GPIO.OUT)
-        self._pwm = GPIO.PWM(self.pwm_pin, self.frequency)
-        self._pwm.start(0)
-        logger.info("Servo on GPIO %d at %d Hz", self.pwm_pin, self.frequency)
+        for compartment, pin in enumerate(self.pins):
+            GPIO.setup(pin, GPIO.OUT)
+            pwm = GPIO.PWM(pin, self.frequency)
+            pwm.start(0)
+            self._pwms[compartment] = pwm
+        logger.info("Servos on GPIO %s at %d Hz", self.pins, self.frequency)
+
+    def _slot_angle(self, slot_index: int) -> float:
+        return round(slot_index * self.angle_per_slot, 1)
 
     def _angle_to_duty(self, angle: float) -> float:
-        """Convert angle (0–180°) to PWM duty cycle."""
+        """Convert an angle (0–max_angle) to a PWM duty cycle."""
         return round(
             self.min_duty + (angle / self.max_angle) * (self.max_duty - self.min_duty),
             2,
         )
 
-    def rotate_to(self, compartment_index: int) -> bool:
+    def rotate_to(self, compartment_index: int, slot_index: int = 0) -> bool:
         """
-        Rotate carousel to align compartment with the discharge chute.
+        Rotate the given compartment so ``slot_index`` aligns with its drop
+        hole. The pill then falls by gravity to the collection base.
         Returns True on success.
         """
         if compartment_index < 0 or compartment_index >= self.num_compartments:
             logger.error("Invalid compartment: %d (range 0–%d)",
                          compartment_index, self.num_compartments - 1)
             return False
+        if slot_index < 0 or slot_index >= self.num_slots:
+            logger.error("Invalid slot: %d (range 0–%d)",
+                         slot_index, self.num_slots - 1)
+            return False
 
-        target_angle = self.angles[compartment_index]
+        target_angle = self._slot_angle(slot_index)
         duty = self._angle_to_duty(target_angle)
 
-        logger.info("Rotating to compartment %d (%.1f°, duty %.2f%%)",
-                     compartment_index, target_angle, duty)
+        logger.info("Compartment %d → slot %d (%.1f°, duty %.2f%%)",
+                    compartment_index, slot_index, target_angle, duty)
 
-        if GPIO_AVAILABLE and self._pwm:
-            self._pwm.ChangeDutyCycle(duty)
+        if GPIO_AVAILABLE:
+            pwm = self._pwms.get(compartment_index)
+            if pwm is None:
+                logger.error("No servo configured for compartment %d", compartment_index)
+                return False
+            pwm.ChangeDutyCycle(duty)
             time.sleep(self.hold_time)
-            self._pwm.ChangeDutyCycle(0)  # Stop signal to prevent jitter
+            pwm.ChangeDutyCycle(0)  # release to prevent jitter/buzz
         else:
-            logger.debug("[SIM] Servo → compartment %d at %.1f°",
-                         compartment_index, target_angle)
+            logger.debug("[SIM] Compartment %d servo → slot %d at %.1f°",
+                         compartment_index, slot_index, target_angle)
             time.sleep(self.hold_time)
 
-        self._current_index = compartment_index
-        logger.info("Now at compartment %d", compartment_index)
+        self._current_slot[compartment_index] = slot_index
         return True
 
-    def home(self) -> None:
-        """Return carousel to home position (compartment 0)."""
-        self.rotate_to(0)
+    def home(self, compartment_index: int | None = None) -> None:
+        """Return one compartment (or all) to slot 0."""
+        if compartment_index is None:
+            for c in range(min(self.num_compartments, len(self.pins))):
+                self.rotate_to(c, 0)
+        else:
+            self.rotate_to(compartment_index, 0)
 
-    @property
-    def current_compartment(self) -> int | None:
-        return self._current_index
+    def current_slot(self, compartment_index: int) -> int | None:
+        return self._current_slot.get(compartment_index)
 
     def cleanup(self) -> None:
-        if GPIO_AVAILABLE and self._pwm:
-            self._pwm.stop()
+        if GPIO_AVAILABLE:
+            for pwm in self._pwms.values():
+                try:
+                    pwm.stop()
+                except Exception:
+                    pass
             logger.info("Servo PWM stopped")

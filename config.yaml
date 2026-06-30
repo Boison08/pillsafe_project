@@ -22,14 +22,30 @@ schedule:
   grace_period_minutes: 15
   poll_interval_seconds: 60
 
-# --- Servo Motor ---
+# --- Dispensing handshake ---
+# When require_verify_request is true the device waits for the mobile app's
+# "Verify Now" (POST /dispense/request) before authenticating; set false for
+# fully autonomous timer-driven verification at the scheduled time.
+dispense:
+  require_verify_request: true
+  verify_request_poll_seconds: 2
+
+# --- Servo Motors (one rotating cylinder per compartment) ---
+# Dispensing is rotation-only: each compartment's servo rotates the chosen
+# slot over its drop hole and the pill falls by gravity to the base.
+# There is no gate servo.
 servo:
-  pwm_pin: 18
   frequency_hz: 50
   num_compartments: 6
-  min_duty: 2.5
-  max_duty: 12.5
-  hold_time: 0.5
+  num_slots: 9                       # angular slots per compartment (~40° each)
+  # One signal pin per compartment (BCM numbering). Index = compartment.
+  # Avoids pins used by I2C RTC (2,3), IR sensors (23,24), buzzer (25),
+  # and the I2S mic (18,19,20).
+  pins: [12, 13, 16, 17, 26, 27]
+  max_angle: 360                     # full rotation: 9 slots × 40°
+  min_duty: 2.5                      # duty cycle at 0°
+  max_duty: 12.5                     # duty cycle at max_angle
+  hold_time: 0.5                     # seconds to hold before releasing the signal
 
 # --- IR Sensors ---
 ir_sensors:

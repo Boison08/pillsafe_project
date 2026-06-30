@@ -68,9 +68,14 @@ pillsafe/
 
 | Component           | Signal   | GPIO (BCM) | Physical Pin | Notes                       |
 |---------------------|----------|------------|--------------|-----------------------------|
-| SG90 Servo Motor    | PWM      | GPIO 18    | Pin 12       | PWM0 hardware channel       |
-| SG90 Servo Motor    | VCC      | —          | Pin 2 (5V)   | Servo needs 5V              |
-| SG90 Servo Motor    | GND      | —          | Pin 6        |                             |
+| Servo — compartment 0 | PWM    | GPIO 12    | Pin 32       | One servo per compartment   |
+| Servo — compartment 1 | PWM    | GPIO 13    | Pin 33       |                             |
+| Servo — compartment 2 | PWM    | GPIO 16    | Pin 36       |                             |
+| Servo — compartment 3 | PWM    | GPIO 17    | Pin 11       |                             |
+| Servo — compartment 4 | PWM    | GPIO 26    | Pin 37       |                             |
+| Servo — compartment 5 | PWM    | GPIO 27    | Pin 13       |                             |
+| Servos              | VCC      | —          | 5V rail      | Servos need 5V (shared)     |
+| Servos              | GND      | —          | GND          | Common ground               |
 | FC-51 IR (pill det) | OUT      | GPIO 23    | Pin 16       | At discharge chute          |
 | FC-51 IR (pickup)   | OUT      | GPIO 24    | Pin 18       | At delivery tray            |
 | FC-51 IR sensors    | VCC      | —          | Pin 1 (3.3V) | Both sensors                |
@@ -150,7 +155,7 @@ pip install -r requirements.txt --break-system-packages
 ### 4. Configure the System
 
 Edit `config.yaml` to set:
-- `api.token` — change from `CHANGE_ME_ON_FIRST_SETUP` to a secure token
+- `api.token` — change from `CHANGE_ME_ON_FIRST_SETUP` to a secure token (or set the `PILLSAFE_API_TOKEN` environment variable, which overrides the config). The server logs a warning while the default is in use.
 - `alerts.serial_port` — verify your USB-to-serial port (`ls /dev/ttyUSB*`)
 - Adjust `face.confidence_threshold` if needed (lower = stricter)
 
@@ -189,23 +194,46 @@ All endpoints (except `/health`) require `Authorization: Bearer <token>` header.
 | DELETE | /users/{id}            | Delete user + facial data                  |
 | POST   | /users/{id}/enrol      | Trigger facial enrolment                   |
 | GET    | /schedules             | List schedules (?user_id= filter)          |
-| POST   | /schedules             | Create schedule (user_id, medication_name, dose_time) |
-| PUT    | /schedules/{id}        | Update schedule                            |
+| POST   | /schedules             | Create schedule (user_id, medication_name, dose_time, [slot_index, dosage, pills_per_dose, repeat_days]) |
+| PUT    | /schedules/{id}        | Update schedule (incl. slot_index, dosage, pills_per_dose, repeat_days) |
 | DELETE | /schedules/{id}        | Delete schedule                            |
 | GET    | /adherence             | Get logs (?user_id=&date= filters)         |
 | POST   | /adherence/{id}/ack    | Acknowledge a missed-dose event            |
+| POST   | /dispense/request      | "Verify Now" — submit user_id, [schedule_id], auth_mode (face/voice) |
+| GET    | /inventory             | List inventory (?compartment_index= filter)|
+| POST   | /inventory             | Set/update a slot's count (compartment_index, slot_index, pill_count, [medication_name, low_threshold]) |
+| GET    | /inventory/low         | List slots at/below their low threshold     |
+| GET    | /notifications         | Event feed (?user_id=&unread=true)          |
+| POST   | /notifications/{id}/read | Mark a notification read                  |
+| GET    | /voice/challenge       | Random voice passphrase to speak            |
+| GET    | /users/{id}/enrol/status | Face + voice enrolment flags              |
+
+> `repeat_days` is a CSV of weekday integers (`0`=Mon … `6`=Sun); empty/omitted means every day. `auth_mode` selects face or voice for that dose.
 
 ---
+
+## Medication Storage (Compartments & Slots)
+
+- **6 compartments**, each permanently assigned to one patient (`Users.compartment_index`, 0–5).
+- Each compartment is a rotating cylinder with **9 angular slots** (~40° apart). A slot holds one medication / scheduled dose (`Schedules.slot_index`, 0–8).
+- Each slot can be **inventory-tracked** (`Inventory` table): a pill count with a low-stock threshold that triggers a `LOW_INVENTORY` notification + SMS.
+
+## Dispensing Mechanism (no gate)
+
+Dispensing is **rotation-only**. Each compartment has its own servo. When a dose is due, that compartment's servo rotates so the target slot aligns with the compartment's fixed **drop hole**; the pill falls by **gravity through a delivery tube to the collection base**. The IR sensors confirm the **drop** and the **pickup**. There is no gate and no gate servo.
 
 ## Operational Workflow
 
 ```
-RTC polls every 60s → Schedule match? → Buzzer alert → Camera ON
-  → Face detected? → FaceNet (TFLite) verify
-    → ACCEPTED: Servo → IR confirm drop → IR confirm pickup → Log TAKEN
-    → REJECTED (3 tries): Log REJECTED → SMS alert to caregiver
-    → NO FACE (grace period): Retry every 30s → Log MISSED → SMS alert
+RTC polls every 60s → Schedule match (time + repeat-day)? → REMINDER notif + buzzer → Camera ON
+  → App sends "Verify Now" (POST /dispense/request) → FaceNet/voice verify the SCHEDULED patient
+    → ACCEPTED: rotate compartment→slot → IR confirm drop → IR confirm pickup
+               → Log TAKEN → decrement inventory → DISPENSED notif (+ LOW_INVENTORY if needed)
+    → REJECTED: Log REJECTED → REJECTED notif → SMS to caregiver
+    → No Verify Now before grace deadline: Log MISSED → MISSED notif → SMS
 ```
+
+> Set `dispense.require_verify_request: false` in `config.yaml` for fully autonomous, timer-driven verification (no app handshake).
 
 ---
 
@@ -213,11 +241,15 @@ RTC polls every 60s → Schedule match? → Buzzer alert → Camera ON
 
 | Parameter                       | Default | Description                                  |
 |---------------------------------|---------|----------------------------------------------|
-| face.confidence_threshold       | 70      | LBPH match threshold (lower = stricter)      |
-| face.max_retries                | 3       | Verification attempts before lockout         |
-| face.sample_count               | 30      | Images captured during enrolment             |
+| face.confidence_threshold       | 60      | FaceNet match score 0–100 = (1−cosine_dist)×100 (higher = stricter) |
+| face.distance_threshold         | 0.6     | Max cosine distance for a valid match         |
+| face.max_retries                | 8       | Verification attempts before lockout         |
+| face.sample_count               | 50      | Images captured during enrolment             |
 | schedule.grace_period_minutes   | 15      | Window before marking dose as MISSED         |
 | schedule.poll_interval_seconds  | 60      | How often the scheduler checks the RTC       |
+| dispense.require_verify_request | true    | Wait for the app's "Verify Now" before auth   |
 | alerts.max_sms_per_event        | 2       | Maximum SMS alerts per missed dose           |
 | alerts.retry_interval_minutes   | 60      | Wait time before sending 2nd SMS             |
-| servo.num_compartments          | 6       | Number of carousel slots                     |
+| servo.num_compartments          | 6       | Number of compartments (one per patient)     |
+| servo.num_slots                 | 9       | Angular slots per compartment (~40° each)    |
+| servo.pins                      | [12,13,16,17,26,27] | One PWM signal pin per compartment |

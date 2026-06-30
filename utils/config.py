@@ -28,7 +28,7 @@ def load_config(path: str | None = None) -> ConfigDict:
     global _CONFIG
     if _CONFIG is None or path is not None:
         config_path = path or _CONFIG_PATH
-        with open(config_path, "r") as f:
+        with open(config_path, "r", encoding="utf-8") as f:
             _CONFIG = ConfigDict(yaml.safe_load(f))
     return _CONFIG
 
