@@ -803,3 +803,162 @@
 [2026-06-30 12:01:38] INFO     pillsafe.database — Created user 'Yaa' (id=1, compartment=2)
 [2026-06-30 12:01:38] INFO     pillsafe.database — Database initialised at C:\Users\Boison\AppData\Local\Temp\pytest-of-Boison\pytest-0\test_notifications_feed0\test.db
 [2026-06-30 12:01:38] INFO     pillsafe.database — Created user 'Esi' (id=1, compartment=3)
+[2026-06-30 12:14:08] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-30 12:14:09] WARNING  pillsafe.dispenser — RPi.GPIO not available — dispenser in simulation mode
+[2026-06-30 12:14:09] WARNING  pillsafe.ir_sensor — RPi.GPIO not available — IR sensors in simulation mode
+[2026-06-30 12:14:09] WARNING  pillsafe.rtc — smbus2 not available — RTC using system clock fallback
+[2026-06-30 12:14:09] INFO     pillsafe.main — ============================================================
+[2026-06-30 12:14:09] INFO     pillsafe.main — PillSafe Smart Pill Dispenser — Starting Up
+[2026-06-30 12:14:09] INFO     pillsafe.main — ============================================================
+[2026-06-30 12:14:09] INFO     pillsafe.main — Initialising database...
+[2026-06-30 12:14:09] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-30 12:14:09] INFO     pillsafe.main — Initialising hardware modules...
+[2026-06-30 12:14:09] INFO     pillsafe.dispenser — Dispenser GPIO simulated — pins [12, 13, 16, 17, 26, 27]
+[2026-06-30 12:14:09] INFO     pillsafe.ir_sensor — IR sensors simulated on GPIO 23, 24
+[2026-06-30 12:14:09] INFO     pillsafe.buzzer — Buzzer simulated on GPIO 25
+[2026-06-30 12:14:09] ERROR    pillsafe.gsm — Serial port /dev/ttyUSB0 error: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+[2026-06-30 12:14:09] INFO     pillsafe.main — Initialising facial recognition pipeline...
+[2026-06-30 12:14:09] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-30 12:14:09] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-30 12:14:09] INFO     pillsafe.facenet — Loaded 50 embeddings for user 10
+[2026-06-30 12:14:09] INFO     pillsafe.facenet — Loaded 44 embeddings for user 4
+[2026-06-30 12:14:09] INFO     pillsafe.facenet — Loaded 47 embeddings for user 5
+[2026-06-30 12:14:09] INFO     pillsafe.facenet — Loaded 50 embeddings for user 6
+[2026-06-30 12:14:09] INFO     pillsafe.facenet — Embedding store ready — 4 enrolled user(s)
+[2026-06-30 12:14:09] INFO     pillsafe.main — Voice recogniser initialised
+[2026-06-30 12:14:09] WARNING  pillsafe.api — API token is still the insecure default — set api.token in config.yaml or the PILLSAFE_API_TOKEN environment variable.
+[2026-06-30 12:14:09] INFO     pillsafe.alerts — Alert service started
+[2026-06-30 12:14:09] INFO     pillsafe.scheduler — Scheduler started (polling every 60s, grace=15 min)
+[2026-06-30 12:14:09] INFO     pillsafe.main — Flask API started on 0.0.0.0:5000
+[2026-06-30 12:14:09] INFO     pillsafe.main — System ready — RTC time: 2026-06-30 12:14:09
+[2026-06-30 12:14:09] INFO     pillsafe.main — Entering idle state — waiting for dispensing events...
+[2026-06-30 12:14:25] INFO     pillsafe.main — Shutdown signal received (signal 2)
+[2026-06-30 12:14:25] INFO     pillsafe.main — Shutting down PillSafe...
+[2026-06-30 12:14:35] INFO     pillsafe.scheduler — Scheduler stopped
+[2026-06-30 12:14:39] INFO     pillsafe.alerts — Alert service stopped
+[2026-06-30 12:14:39] INFO     pillsafe.main — PillSafe shut down complete
+[2026-06-30 12:14:39] INFO     pillsafe.main — ============================================================
+[2026-06-30 12:14:57] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-30 12:15:03] INFO     pillsafe.camera — Camera started at 640x480
+[2026-06-30 12:15:04] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-30 12:15:04] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-30 12:15:04] INFO     pillsafe.facenet — Loaded 50 embeddings for user 10
+[2026-06-30 12:15:04] INFO     pillsafe.facenet — Loaded 44 embeddings for user 4
+[2026-06-30 12:15:04] INFO     pillsafe.facenet — Loaded 47 embeddings for user 5
+[2026-06-30 12:15:04] INFO     pillsafe.facenet — Loaded 50 embeddings for user 6
+[2026-06-30 12:15:04] INFO     pillsafe.facenet — Embedding store ready — 4 enrolled user(s)
+[2026-06-30 12:15:07] INFO     pillsafe.facenet — Prediction: user=10, cosine_dist=0.1673, confidence=83.3
+[2026-06-30 12:15:07] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-30 12:15:10] INFO     pillsafe.decision — Face verification attempt 1/8
+[2026-06-30 12:15:10] INFO     pillsafe.facenet — Prediction: user=10, cosine_dist=0.2269, confidence=77.3
+[2026-06-30 12:15:10] INFO     pillsafe.decision — ACCEPTED attempt 1: user=10 confidence=77.3106 dist=0.2269
+[2026-06-30 12:15:12] INFO     pillsafe.camera — Camera stopped
+[2026-06-30 12:15:12] WARNING  pillsafe.dispenser — RPi.GPIO not available — dispenser in simulation mode
+[2026-06-30 12:15:12] WARNING  pillsafe.ir_sensor — RPi.GPIO not available — IR sensors in simulation mode
+[2026-06-30 12:15:12] WARNING  pillsafe.rtc — smbus2 not available — RTC using system clock fallback
+[2026-06-30 12:15:12] INFO     pillsafe.dispenser — Dispenser GPIO simulated — pins [12, 13, 16, 17, 26, 27]
+[2026-06-30 12:15:12] INFO     pillsafe.dispenser — Dispenser GPIO simulated — pins [12, 13, 16, 17, 26, 27]
+[2026-06-30 12:15:12] ERROR    pillsafe.dispenser — Invalid compartment: -1 (range 0–5)
+[2026-06-30 12:15:12] ERROR    pillsafe.dispenser — Invalid slot: 99 (range 0–8)
+[2026-06-30 12:15:13] INFO     pillsafe.database — Database initialised at C:\Users\Boison\AppData\Local\Temp\pytest-of-Boison\pytest-1\test_create_schedule_with_slot0\test.db
+[2026-06-30 12:15:13] INFO     pillsafe.database — Created user 'Ama Mensah' (id=1, compartment=0)
+[2026-06-30 12:15:13] INFO     pillsafe.database — Created schedule 1 for user 1: Metformin at 08:00 (slot 3)
+[2026-06-30 12:15:13] INFO     pillsafe.database — Database initialised at C:\Users\Boison\AppData\Local\Temp\pytest-of-Boison\pytest-1\test_create_schedule_rejects_b0\test.db
+[2026-06-30 12:15:13] INFO     pillsafe.database — Created user 'Kofi' (id=1, compartment=1)
+[2026-06-30 12:15:13] INFO     pillsafe.database — Database initialised at C:\Users\Boison\AppData\Local\Temp\pytest-of-Boison\pytest-1\test_inventory_decrement_and_l0\test.db
+[2026-06-30 12:15:13] INFO     pillsafe.database — Created user 'Yaa' (id=1, compartment=2)
+[2026-06-30 12:15:14] INFO     pillsafe.database — Database initialised at C:\Users\Boison\AppData\Local\Temp\pytest-of-Boison\pytest-1\test_notifications_feed0\test.db
+[2026-06-30 12:15:14] INFO     pillsafe.database — Created user 'Esi' (id=1, compartment=3)
+[2026-06-30 12:37:59] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-30 12:38:00] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-30 12:38:00] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-30 12:38:00] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-30 12:38:00] INFO     pillsafe.facenet — Loaded 50 embeddings for user 10
+[2026-06-30 12:38:00] INFO     pillsafe.facenet — Loaded 44 embeddings for user 4
+[2026-06-30 12:38:00] INFO     pillsafe.facenet — Loaded 47 embeddings for user 5
+[2026-06-30 12:38:00] INFO     pillsafe.facenet — Loaded 50 embeddings for user 6
+[2026-06-30 12:38:00] INFO     pillsafe.facenet — Embedding store ready — 4 enrolled user(s)
+[2026-06-30 12:38:05] INFO     pillsafe.camera — Camera started at 640x480
+[2026-06-30 12:38:24] INFO     pillsafe.database — Created user 'punch' (id=7, compartment=4)
+[2026-06-30 12:38:28] INFO     pillsafe.enroll — Captured sample 1/50 for user 7
+[2026-06-30 12:38:28] INFO     pillsafe.enroll — Captured sample 2/50 for user 7
+[2026-06-30 12:38:28] INFO     pillsafe.enroll — Captured sample 3/50 for user 7
+[2026-06-30 12:38:29] INFO     pillsafe.enroll — Captured sample 4/50 for user 7
+[2026-06-30 12:38:29] INFO     pillsafe.enroll — Captured sample 5/50 for user 7
+[2026-06-30 12:38:29] INFO     pillsafe.enroll — Captured sample 6/50 for user 7
+[2026-06-30 12:38:30] INFO     pillsafe.enroll — Captured sample 7/50 for user 7
+[2026-06-30 12:38:30] INFO     pillsafe.enroll — Captured sample 8/50 for user 7
+[2026-06-30 12:38:30] INFO     pillsafe.enroll — Captured sample 9/50 for user 7
+[2026-06-30 12:38:30] INFO     pillsafe.enroll — Captured sample 10/50 for user 7
+[2026-06-30 12:38:31] INFO     pillsafe.enroll — Captured sample 11/50 for user 7
+[2026-06-30 12:38:31] INFO     pillsafe.enroll — Captured sample 12/50 for user 7
+[2026-06-30 12:38:31] INFO     pillsafe.enroll — Captured sample 13/50 for user 7
+[2026-06-30 12:38:31] INFO     pillsafe.enroll — Captured sample 14/50 for user 7
+[2026-06-30 12:38:32] INFO     pillsafe.enroll — Captured sample 15/50 for user 7
+[2026-06-30 12:38:32] INFO     pillsafe.enroll — Captured sample 16/50 for user 7
+[2026-06-30 12:38:32] INFO     pillsafe.enroll — Captured sample 17/50 for user 7
+[2026-06-30 12:38:33] INFO     pillsafe.enroll — Captured sample 18/50 for user 7
+[2026-06-30 12:38:33] INFO     pillsafe.enroll — Captured sample 19/50 for user 7
+[2026-06-30 12:38:33] INFO     pillsafe.enroll — Captured sample 20/50 for user 7
+[2026-06-30 12:38:33] INFO     pillsafe.enroll — Captured sample 21/50 for user 7
+[2026-06-30 12:38:34] INFO     pillsafe.enroll — Captured sample 22/50 for user 7
+[2026-06-30 12:38:34] INFO     pillsafe.enroll — Captured sample 23/50 for user 7
+[2026-06-30 12:38:34] INFO     pillsafe.enroll — Captured sample 24/50 for user 7
+[2026-06-30 12:38:34] INFO     pillsafe.enroll — Captured sample 25/50 for user 7
+[2026-06-30 12:38:35] INFO     pillsafe.enroll — Captured sample 26/50 for user 7
+[2026-06-30 12:38:35] INFO     pillsafe.enroll — Captured sample 27/50 for user 7
+[2026-06-30 12:38:35] INFO     pillsafe.enroll — Captured sample 28/50 for user 7
+[2026-06-30 12:38:36] INFO     pillsafe.enroll — Captured sample 29/50 for user 7
+[2026-06-30 12:38:36] INFO     pillsafe.enroll — Captured sample 30/50 for user 7
+[2026-06-30 12:38:36] INFO     pillsafe.enroll — Captured sample 31/50 for user 7
+[2026-06-30 12:38:36] INFO     pillsafe.enroll — Captured sample 32/50 for user 7
+[2026-06-30 12:38:37] INFO     pillsafe.enroll — Captured sample 33/50 for user 7
+[2026-06-30 12:38:37] INFO     pillsafe.enroll — Captured sample 34/50 for user 7
+[2026-06-30 12:38:37] INFO     pillsafe.enroll — Captured sample 35/50 for user 7
+[2026-06-30 12:38:37] INFO     pillsafe.enroll — Captured sample 36/50 for user 7
+[2026-06-30 12:38:38] INFO     pillsafe.enroll — Captured sample 37/50 for user 7
+[2026-06-30 12:38:38] INFO     pillsafe.enroll — Captured sample 38/50 for user 7
+[2026-06-30 12:38:38] INFO     pillsafe.enroll — Captured sample 39/50 for user 7
+[2026-06-30 12:38:39] INFO     pillsafe.enroll — Captured sample 40/50 for user 7
+[2026-06-30 12:38:39] INFO     pillsafe.enroll — Captured sample 41/50 for user 7
+[2026-06-30 12:38:39] INFO     pillsafe.enroll — Captured sample 42/50 for user 7
+[2026-06-30 12:38:39] INFO     pillsafe.enroll — Captured sample 43/50 for user 7
+[2026-06-30 12:38:40] INFO     pillsafe.enroll — Captured sample 44/50 for user 7
+[2026-06-30 12:38:40] INFO     pillsafe.enroll — Captured sample 45/50 for user 7
+[2026-06-30 12:38:40] INFO     pillsafe.enroll — Captured sample 46/50 for user 7
+[2026-06-30 12:38:40] INFO     pillsafe.enroll — Captured sample 47/50 for user 7
+[2026-06-30 12:38:41] INFO     pillsafe.enroll — Captured sample 48/50 for user 7
+[2026-06-30 12:38:41] INFO     pillsafe.enroll — Captured sample 49/50 for user 7
+[2026-06-30 12:38:41] INFO     pillsafe.enroll — Captured sample 50/50 for user 7
+[2026-06-30 12:38:41] INFO     pillsafe.facenet — Generating embeddings for user 10 (50 images)
+[2026-06-30 12:38:41] INFO     pillsafe.facenet — User 10: saved 50 embeddings -> data/dataset\10\embeddings.npy
+[2026-06-30 12:38:41] INFO     pillsafe.facenet — Generating embeddings for user 4 (50 images)
+[2026-06-30 12:38:42] WARNING  pillsafe.facenet — User 4: dropped 6 outlier sample(s) (bad crops) out of 50
+[2026-06-30 12:38:42] INFO     pillsafe.facenet — User 4: saved 44 embeddings -> data/dataset\4\embeddings.npy
+[2026-06-30 12:38:42] INFO     pillsafe.facenet — Generating embeddings for user 5 (50 images)
+[2026-06-30 12:38:42] WARNING  pillsafe.facenet — User 5: dropped 3 outlier sample(s) (bad crops) out of 50
+[2026-06-30 12:38:42] INFO     pillsafe.facenet — User 5: saved 47 embeddings -> data/dataset\5\embeddings.npy
+[2026-06-30 12:38:42] INFO     pillsafe.facenet — Generating embeddings for user 6 (50 images)
+[2026-06-30 12:38:42] INFO     pillsafe.facenet — User 6: saved 50 embeddings -> data/dataset\6\embeddings.npy
+[2026-06-30 12:38:42] INFO     pillsafe.facenet — Generating embeddings for user 7 (50 images)
+[2026-06-30 12:38:42] WARNING  pillsafe.facenet — User 7: dropped 5 outlier sample(s) (bad crops) out of 50
+[2026-06-30 12:38:42] INFO     pillsafe.facenet — User 7: saved 45 embeddings -> data/dataset\7\embeddings.npy
+[2026-06-30 12:38:42] INFO     pillsafe.facenet — Training complete — 5 user(s), 236 total embeddings
+[2026-06-30 12:39:35] INFO     pillsafe.camera — Camera stopped
+[2026-06-30 12:39:53] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
+[2026-06-30 12:39:58] INFO     pillsafe.camera — Camera started at 640x480
+[2026-06-30 12:39:59] INFO     pillsafe.detector — Face detector initialised (ROI size: (112, 112), scaleFactor=1.10, minNeighbors=3, minSize=(50, 50))
+[2026-06-30 12:39:59] INFO     pillsafe.facenet — TFLite model loaded — input 112x112x3, embedding dim 128  [backend: ai_edge_litert]
+[2026-06-30 12:39:59] INFO     pillsafe.facenet — Loaded 50 embeddings for user 10
+[2026-06-30 12:39:59] INFO     pillsafe.facenet — Loaded 44 embeddings for user 4
+[2026-06-30 12:39:59] INFO     pillsafe.facenet — Loaded 47 embeddings for user 5
+[2026-06-30 12:39:59] INFO     pillsafe.facenet — Loaded 50 embeddings for user 6
+[2026-06-30 12:39:59] INFO     pillsafe.facenet — Loaded 45 embeddings for user 7
+[2026-06-30 12:39:59] INFO     pillsafe.facenet — Embedding store ready — 5 enrolled user(s)
+[2026-06-30 12:40:02] INFO     pillsafe.facenet — Prediction: user=7, cosine_dist=0.1042, confidence=89.6
+[2026-06-30 12:40:02] INFO     pillsafe.database — Database initialised at data/pillsafe.db
+[2026-06-30 12:40:05] INFO     pillsafe.decision — Face verification attempt 1/8
+[2026-06-30 12:40:05] INFO     pillsafe.facenet — Prediction: user=7, cosine_dist=0.0555, confidence=94.4
+[2026-06-30 12:40:05] INFO     pillsafe.decision — ACCEPTED attempt 1: user=7 confidence=94.4482 dist=0.0555
+[2026-06-30 12:40:07] INFO     pillsafe.camera — Camera stopped
+[2026-06-30 12:40:19] INFO     pillsafe.camera — Picamera2 not found — falling back to OpenCV VideoCapture
